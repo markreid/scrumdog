@@ -126,9 +126,10 @@ function users(state = defaultState.users, action){
             break;
 
         case 'RECEIVE_CREATE_USER':
+        case 'RECEIVE_UPDATE_USER':
             // add
             return Object.assign({}, state, {
-                [action.data.result]: attachSingleSyncState(action.data.entities.users[action.data.result])
+                [action.payload.result]: attachSingleSyncState(action.payload.entities.users[action.payload.result])
             });
             break;
 

@@ -23,7 +23,6 @@ class UserListComponent extends Component {
         // no auto binding in ES6 classes, boooo.
         this.clickHandler = this.clickHandler.bind(this);
         this.createEntry = this.createEntry.bind(this);
-        this.removeUser = this.removeUser.bind(this);
     }
 
     componentWillMount(){
@@ -31,7 +30,7 @@ class UserListComponent extends Component {
     }
 
     render () {
-        let users = this.props.users.map(user => <UserIcon key={user.id} id={user.id} onClick={this.clickHandler.bind(this, user.id)} />);
+        let users = this.props.users.map(user => <UserIcon key={user.id} id={user.id} onClick={this.clickHandler} />);
         return (
             <div className="user-list">
                 <header>
@@ -45,22 +44,13 @@ class UserListComponent extends Component {
         );
     }
 
-    clickHandler(userId, evt){
-        // if they're not holding the shift key, it's an add entry
-        if(!evt.shiftKey) return this.createEntry(userId);
-
-        // if they are, we're deleting the user
-        if(evt.shiftKey) return this.removeUser(userId);
+    clickHandler(userId){
+        return this.createEntry(userId);
     }
 
     createEntry(userId){
         this.props.dispatch(createEntry(this.props.standup.id, userId));
     }
-
-    removeUser(userId){
-        this.props.dispatch(removeUser(userId));
-    }
-
 }
 
 export default connect(function UserListMapStateToProps(state, ownProps){

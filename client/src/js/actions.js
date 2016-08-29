@@ -150,12 +150,23 @@ let requestCreateUser = function(){
     }
 };
 
-let receiveCreateUser = function(data){
+let requestUpdateUser = function() {
+    return {
+        type: 'REQUEST_UPDATE_USER'
+    };
+};
+
+let receiveCreateUser = function(payload){
     return {
         type: 'RECEIVE_CREATE_USER',
-        data
+        payload
     }
 };
+
+let receiveUpdateUser = (payload) => ({
+    type: 'RECEIVE_UPDATE_USER',
+    payload,
+});
 
 let requestRemoveUser = function(id){
     return {
@@ -352,7 +363,7 @@ export function fetchLastStandup(){
             return dispatch(receiveLastStandup(normalized));
         })
         .catch(err => {
-            console.error(err);
+            console.error(err.stack);
         });
     }
 }
@@ -412,6 +423,20 @@ export function createUser(modelProps){
         .then(response => response.json())
         .then(json => normalize(json, normalizerSchemas.user))
         .then(normalized => dispatch(receiveCreateUser(normalized)));
+    }
+}
+
+export function updateUser(props){
+    return dispatch => {
+        dispatch(requestUpdateUser());
+        return fetch(`/api/v1/users/${props.id}`, {
+            method: 'PUT',
+            body: JSON.stringify(props),
+            headers: ajaxHeaders
+        })
+        .then(response => response.json())
+        .then(json => normalize(json, normalizerSchemas.user))
+        .then(normalized => dispatch(receiveUpdateUser(normalized)));
     }
 }
 

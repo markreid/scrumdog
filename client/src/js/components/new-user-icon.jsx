@@ -11,6 +11,7 @@ import store from '../store';
 import {createUser} from '../actions';
 
 import Loader from './loader.jsx';
+import UserProfile from './user-profile.jsx';
 
 class NewUserIconComponent extends Component {
 
@@ -18,63 +19,51 @@ class NewUserIconComponent extends Component {
         super();
         this.state = {
             active: false,
-            fullName: '',
-            email: '',
-            nickname: '',
-            syncing: false
+            syncing: false,
         }
     }
 
     render (){
         if(!this.state.active) return <div className="user-icon add-user" onClick={this.activate.bind(this)}>+</div>
 
-        return <div className="user-add-form">
-            <input type="text" placeholder="full name" value={this.state.fullName} onChange={this.setValue.bind(this,'fullName')} />
-            <input type="email" placeholder="email" value={this.state.email} onChange={this.setValue.bind(this,'email')} />
-            <input type="text" placeholder="nickname" value={this.state.nickname} onChange={this.setValue.bind(this,'nickname')} />
-
-            <button className="btn" onClick={this.createUser.bind(this)}>Go</button>
-            <button className="btn alt" onClick={this.deactivate.bind(this)}>Cancel</button>
-
-            {this.state.syncing &&
-                <Loader size="tiny" />
-            }
-        </div>
+        return (
+            <div>
+                <UserProfile
+                    onSave={this.createUser.bind(this)}
+                    onCancel={this.deactivate.bind(this)}
+                />
+                {this.state.syncing && <Loader size="tiny" />}
+            </div>
+        );
     }
 
     activate() {
         this.setState({
-            active: true
+            active: true,
         });
     }
 
     deactivate() {
         this.setState({
             active: false,
-            fullName: '',
-            email: '',
-            nickname: '',
-            syncing: false
+            syncing: false,
         });
     }
 
-    setValue(key, evt) {
+    createUser(props) {
+
         if(this.state.syncing) return;
 
         this.setState({
-            [key]: evt.currentTarget.value
+            syncing: true,
         });
-    }
 
-    createUser() {
-        if(this.state.syncing) return;
-
-        this.state.syncing = true;
+        const { fullName, email, nickname } = props;
 
         store.dispatch(createUser({
-            fullName: this.state.fullName,
-            email: this.state.email,
-            nickname: this.state.nickname
+            fullName,
+            email,
+            nickname,
         })).then(() => {
             // todo - this should listen for an action
             this.deactivate();

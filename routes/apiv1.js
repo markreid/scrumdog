@@ -3,7 +3,6 @@
  */
 
 const db = require('../models');
-const _ = require('lodash');
 
 const express = require('express');
 
@@ -244,5 +243,39 @@ router.delete('/standups/:standupId', (req, res) => {
   });
 });
 
+
+router.get('/teams', (req, res) => {
+  db.Team.findAll({
+    include: db.User,
+  })
+  .then(response => res.send(response))
+  .catch(err => res.status(500).send(err));
+});
+
+router.post('/teams', (req, res) => {
+  db.Team.create(req.body)
+  .then(data => res.status(201).send(data))
+  .catch((err) => {
+    if (err.name === 'SequelizeValidationError') {
+      res.status(400).send(err);
+    } else {
+      res.status(500).send(err);
+    }
+  });
+});
+
+router.put('/teams/:teamId/users/:userId', (req, res) => {
+  db.Team.findById(req.params.teamId)
+  .then(team => team.addUser(req.params.userId))
+  .then(response => res.status(201).send(response))
+  .catch(err => res.status(500).send(err));
+});
+
+router.delete('/teams/:teamId/users/:userId', (req, res) => {
+  db.Team.findById(req.params.teamId)
+  .then(team => team.removeUser(req.params.userId))
+  .then(response => res.status(201).send(response))
+  .catch(err => res.status(500).send(err));
+});
 
 module.exports = router;

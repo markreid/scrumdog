@@ -45,5 +45,12 @@ db.Standup.hasMany(db.Entry, {
 db.Entry.belongsTo(db.User, {
   onDelete: 'cascade', // nuke entries when we delete users
 });
+db.Team.belongsToMany(db.User, {
+  through: db.TeamUser,
+});
+db.User.belongsToMany(db.Team, {
+  through: db.TeamUser,
+});
+
 
 module.exports = db;

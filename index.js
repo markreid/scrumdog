@@ -3,44 +3,46 @@
  */
 
 
-var express = require('express');
-var morgan = require('morgan');
-var bodyParser = require('body-parser');
+const express = require('express');
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
 
-var config = require('./config.json');
-var models = require('./models');
+const config = require('./config.json');
+const models = require('./models');
 
+const apiRouter = require('./routes/apiv1');
 
-
-var app = express();
+const app = express();
 app.use('/static', express.static('client/build'));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({
+  extended: true,
+}));
 
 
 // only one route
-app.get('/', function(req, res, next){
-    res.status(200).sendFile('client/build/index.html', {
-        root: __dirname
-    });
+app.get('/', (req, res) => {
+  res.status(200).sendFile('client/build/index.html', {
+    root: __dirname,
+  });
 });
 
 // api routes
-require('./routes/api')(app);
+app.use('/api/v1', apiRouter);
 
 
 /**
- * Start the Expres server
+ * Start the Express server
  */
-function startExpress(){
-    return app.listen(config.server.port, function(){
-        console.log('Scrumdog running on ' + config.server.port);
-    });
-}
+const startExpress = () => {
+  app.listen(config.server.port, () => {
+   console.log(`Scrumdog running on ${config.server.port}`);
+  });
+};
 
 // you can pass --forcesync as the first argumetn to force a sync of the DB.
 // todo - do this better, it's flaky.
 models.sequelize.sync({
-    force: process.argv[2] === '--forcesync'
+  force: process.argv[2] === '--forcesync',
 }).then(startExpress);

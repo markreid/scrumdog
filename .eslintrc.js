@@ -1,4 +1,8 @@
 module.exports = {
+  "env": {
+    "browser": true,
+    "node": true,
+  },
   "extends": "airbnb",
   "plugins": [
     "react"
@@ -7,6 +11,7 @@ module.exports = {
   "rules": {
     "import/no-extraneous-dependencies": [0, {
       "devDependencies": ["client/src/**/*"]
-    }]
+    }],
+    "no-console": 0,
   }
 };

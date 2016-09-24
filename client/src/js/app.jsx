@@ -17,7 +17,6 @@ import Sidebar from './components/sidebar.jsx';
 import Header from './components/header.jsx';
 
 
-
 import store from './store';
 
 @autobind
@@ -37,30 +36,25 @@ class App extends Component {
   }
 
   render() {
-    const wrapperClassName = 'sidebar-wrapper ' + (this.state.showSidebar ? 'show' : '');
+    const wrapperClassName = `sidebar-wrapper ${this.state.showSidebar ? 'show' : ''}`;
 
-    return <div>
-    <div onClick={ this.toggleSidebar }>
-    <Header />
-    </div>
+    return (<div>
+      <div onClick={this.toggleSidebar}>
+        <Header />
+      </div>
 
-    <div className={ wrapperClassName }>
-    <div className="sidebar">
-    <Sidebar />
-    </div>
-    <div className="content">
-    <Standup />
-    { false && <Checklist /> }
-    <StandupSummary />
-    </div>
-    </div>
-
-    </div>;
+      <div className={wrapperClassName}>
+        <div className="sidebar">
+          <Sidebar />
+        </div>
+        <div className="content">
+          <Standup />
+          { false && <Checklist /> }
+          <StandupSummary />
+        </div>
+      </div>
+    </div>);
   }
-
-
-
-
 }
 
 
@@ -69,16 +63,11 @@ class App extends Component {
  * so the store state is passed in as props.
  * niiiiiiice
  */
- class ProviderWrapper extends Component{
-  render() {
-    return (
-      <Provider store={store}>
-        <App />
-      </Provider>
-      )
-  }
-}
+const ProviderWrapper = () => (
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
 
 
-
-ReactDOM.render(<ProviderWrapper />, document.body);
+ReactDOM.render(<ProviderWrapper />, document.querySelector('#scrumdog-application'));

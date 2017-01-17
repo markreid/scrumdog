@@ -3,10 +3,10 @@
  * Redux actions
  */
 
-import normalizerSchemas from './normalizers';
-import {normalize, arrayOf} from 'normalizr';
+import { normalize, arrayOf } from 'normalizr';
 import pick from 'lodash/pick';
 
+import normalizerSchemas from './normalizers';
 import store from './store';
 
 
@@ -235,6 +235,36 @@ let receiveStandup = function(data){
         data
     }
 };
+
+
+function requestFetchNotes() {
+    return {
+        type: 'REQUEST_FETCH_NOTES',
+    };
+}
+
+function receiveFetchNotes({ err, data }) {
+    return {
+        type: 'RECEIVE_FETCH_NOTES',
+        err,
+        data,
+    };
+}
+
+function requestSendNotes(notes) {
+    return {
+        type: 'REQUEST_SEND_NOTES',
+        notes,
+    };
+}
+
+function receiveSendNotes({ err, data }) {
+    return {
+        type: 'RECEIVE_SEND_NOTES',
+        err,
+        data,
+    };
+}
 
 
 export function setActiveStandup(id){
@@ -474,16 +504,39 @@ export function removeStandup(standupId){
     }
 }
 
-export function mailStandup(standupId){
+export function fetchNotes() {
     return dispatch => {
+        dispatch(requestFetchNotes());
 
-        return fetch('/api/v1/mailer/' + standupId, {
-            method: 'POST',
-            headers: ajaxHeaders,
-            body: JSON.stringify({
-                action: 'mailStandup',
-                standupId
-            })
+        return fetch('/api/v1/notes')
+        .then(response => response.json())
+        .then(data => {
+            dispatch(receiveFetchNotes({ data }));
+        })
+        .catch(err => {
+            dispatch(receiveFetchNotes({ err }));
         });
     }
+}
+
+export function sendNotes(notes) {
+    return dispatch => {
+        dispatch(requestSendNotes());
+
+        return fetch('/api/v1/notes', {
+            method: 'PUT',
+            body: JSON.stringify({
+                notes,
+            }),
+            headers: ajaxHeaders,
+        })
+        .then(response => response.json())
+        .then(data => {
+            dispatch(receiveSendNotes({ data }));
+            return data.notes;
+        })
+        .catch(err => {
+            dispatch(receiveSendNotes({ err }));
+        });
+    };
 }

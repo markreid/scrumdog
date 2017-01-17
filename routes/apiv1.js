@@ -278,4 +278,52 @@ router.delete('/teams/:teamId/users/:userId', (req, res) => {
   .catch(err => res.status(500).send(err));
 });
 
+
+// i haven't really decided how notes work properly yet, so
+// what we'll do is have a single Notes row. there's an endpoint
+// to create that will only create if it doesn't exist (fresh installs)
+// and the GET and PUT always just return the single row.
+
+router.post('/notes', (req, res) => {
+  // this will get or create the single note row.
+  db.Notes.findById(1)
+  .then((row) => {
+    if (!row) return db.Notes.create();
+    return row;
+  })
+  .then((row) => {
+    res.status(201).send(row);
+  })
+  .catch(err => res.status(500).send(err));
+});
+
+router.get('/notes', (req, res) => {
+  db.Notes.findById(1)
+  .then((row) => {
+    res.send(row);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send(err);
+  });
+});
+
+router.put('/notes', (req, res) => {
+  db.Notes.update({
+    notes: req.body.notes,
+  }, {
+    where: {
+      id: 1,
+    },
+  })
+  .then(() => db.Notes.findById(1))
+  .then((row) => {
+    res.send(row);
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send(err);
+  });
+});
+
 module.exports = router;

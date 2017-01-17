@@ -9,12 +9,14 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import autobind from 'autobind-decorator';
+import classnames from 'classnames';
 
 import Standup from './components/standup.jsx';
 import StandupSummary from './components/standup-summary.jsx';
 import Checklist from './components/checklist.jsx';
 import Sidebar from './components/sidebar.jsx';
 import Header from './components/header.jsx';
+import Notes from './components/notes.jsx';
 
 
 import store from './store';
@@ -29,28 +31,43 @@ class App extends Component {
     };
   }
 
-  toggleSidebar() {
+  toggleLeftSidebar() {
     this.setState({
-      showSidebar: !this.state.showSidebar,
+      showSidebar: this.state.showSidebar !== 1 ? 1 : 0,
+    });
+  }
+
+  toggleRightSidebar() {
+    this.setState({
+      showSidebar: this.state.showSidebar !== 2 ? 2 : 0,
     });
   }
 
   render() {
-    const wrapperClassName = `sidebar-wrapper ${this.state.showSidebar ? 'show' : ''}`;
+    const { showSidebar } = this.state;
+
+    const wrapperClassName = classnames('sidebar-wrapper', {
+      'show-left': showSidebar === 1,
+      'show-right': showSidebar === 2,
+    });
 
     return (<div>
-      <div onClick={this.toggleSidebar}>
+      <div onClick={this.toggleLeftSidebar}>
         <Header />
       </div>
+      <button onClick={this.toggleRightSidebar}>notes</button>
 
       <div className={wrapperClassName}>
-        <div className="sidebar">
+        <div className="sidebar sidebar-left">
           <Sidebar />
         </div>
         <div className="content">
           <Standup />
           { false && <Checklist /> }
           <StandupSummary />
+        </div>
+        <div className="sidebar sidebar-right">
+          <Notes />
         </div>
       </div>
     </div>);

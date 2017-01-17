@@ -59,13 +59,17 @@ body {
 
 .sidebar-wrapper {
   display: flex;
-  width: 125%;
-  transform: translateX(-20%);
+  width: 150%;
+  transform: translateX(-16.667%);
   transition: transform 0.4s ease-in-out;
 }
 
-.sidebar-wrapper.show {
+.sidebar-wrapper.show-left {
   transform: translateX(0);
+}
+
+.sidebar-wrapper.show-right {
+  transform: translateX(-33.3%);
 }
 
 .sidebar-wrapper .sidebar {
@@ -143,6 +147,9 @@ body {
 }
 
 
+#notes {
+  padding-left: 32px;
+}
 
 #logo {
   font-weight: 200;
@@ -388,6 +395,30 @@ body {
 .entry-wrapper.header .entry-column {
 
 }
+
+
+
+
+#notes textarea {
+    display: block;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    padding: 8px;
+    width: 100%;
+    margin: 0 0 12px;
+}
+
+#notes button {
+    border: 1px solid #ccc;
+    background: #eee;
+    border-radius: 2px;
+}
+
+#notes button.dirty {
+    background: #fdd;
+}
+
+
 
 .loader-wrapper {
     height: 100px;

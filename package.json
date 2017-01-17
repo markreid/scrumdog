@@ -24,6 +24,7 @@
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-es2015": "^6.14.0",
     "babel-preset-react": "^6.11.1",
+    "classnames": "^2.2.5",
     "copy-webpack-plugin": "^3.0.1",
     "eslint": "^3.6.0",
     "eslint-config-airbnb": "^11.1.0",
@@ -46,7 +47,7 @@
     "build": "webpack",
     "dev": "nodemon index --config .nodemon.json",
     "lint": "eslint .",
-    "start": "node index",
+    "start": "nodemon index",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --watch"
   },

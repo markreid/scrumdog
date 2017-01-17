@@ -21,7 +21,10 @@ const defaultState = {
     entries: {},
     users: {},
     activeStandup: null,
-    components: {}
+    components: {},
+    notes: {
+        notes: 'loading notes...',
+    }
 }
 
 
@@ -298,6 +301,22 @@ function standupTitles(state = defaultState.standupTitles, action){
     }
 }
 
+function notes(state = defaultState.notes, action) {
+    switch (action.type) {
+
+        case 'RECEIVE_FETCH_NOTES':
+            const { notes } = action.data;
+            return {
+                notes,
+            };
+
+        case 'REQUEST_FETCH_NOTES':
+        default:
+            return state;
+            break;
+
+    }
+}
 
 
 
@@ -365,5 +384,6 @@ export const rootReducer = combineReducers({
     standups,
     users,
     standupTitles,
-    activeStandup
+    activeStandup,
+    notes,
 })

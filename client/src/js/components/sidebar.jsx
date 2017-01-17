@@ -9,6 +9,8 @@ import autobind from 'autobind-decorator';
 import StandupListItem from './standup-list-item.jsx';
 import { createStandup, fetchStandupTitles, removeStandup } from '../actions';
 
+const NUM_VISIBLE_STANDUPS = 10;
+
 @autobind
 class Sidebar extends Component {
 
@@ -17,6 +19,14 @@ class Sidebar extends Component {
       dispatch: React.PropTypes.function,
       activeStandup: React.PropTypes.object,
       standupTitles: React.PropTypes.array,
+    };
+  }
+
+  constructor() {
+    super();
+
+    this.state = {
+      showAll: false,
     };
   }
 
@@ -32,11 +42,22 @@ class Sidebar extends Component {
     this.props.dispatch(removeStandup(this.props.activeStandup.id));
   }
 
+  toggleShowAll() {
+    this.setState({
+      showAll: !this.state.showAll,
+    });
+  }
+
   render() {
     const { standupTitles } = this.props;
-    const standupItems = standupTitles.map((standup, key) => (
+    const { showAll } = this.state;
+
+    const standupItems = standupTitles
+    .slice(0, showAll ? standupTitles.length : NUM_VISIBLE_STANDUPS)
+    .map((standup, key) => (
       <StandupListItem {...standup} key={key} />
     ));
+
 
     return (
       <div id="sidebar">
@@ -48,6 +69,7 @@ class Sidebar extends Component {
         <ul className="standup-list">
           { standupItems }
         </ul>
+        <button onClick={this.toggleShowAll}>{ showAll ? `Show ${NUM_VISIBLE_STANDUPS}` : 'Show All' }</button>
       </div>
     );
   }

@@ -280,10 +280,9 @@ body {
     transition: opacity 0.25s ease-in-out;
 }
 
-.entry-column textarea {
+.entry-column textarea, #notes textarea {
   width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: none;
   resize: none;
   height: 100%;
   padding: 8px;
@@ -292,7 +291,10 @@ body {
   font-size: 1.8rem;
   font-weight: 200;
   line-height: 1.5em;
-  border: none;
+}
+
+.entry-column textarea:empty {
+    border: 1px dashed #ddd;
 }
 
 .entry-column textarea:focus {
@@ -396,9 +398,6 @@ body {
 
 }
 
-
-
-
 #notes textarea {
     display: block;
     border: 1px solid #ddd;
@@ -406,6 +405,7 @@ body {
     padding: 8px;
     width: 100%;
     margin: 24px 0;
+    resize: none;
 }
 
 #notes button {

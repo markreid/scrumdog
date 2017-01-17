@@ -76,6 +76,6 @@ class Sidebar extends Component {
 }
 
 export default connect(state => ({
-  standupTitles: Object.keys(state.standupTitles).map(id => state.standupTitles[id]),
+  standupTitles: state.standupTitles,
   activeStandup: state.standups[state.activeStandup],
 }))(Sidebar);

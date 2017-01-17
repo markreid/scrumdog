@@ -11,9 +11,11 @@ import EntryTextarea from './entry-textarea.jsx';
 @autobind
 class Notes extends React.Component {
 
-  static propTypes: {
-    notes: React.PropTypes.strindg,
-    dispatch: React.PropTypes.func,
+  static propTypes() {
+    return {
+      notes: React.PropTypes.string,
+      dispatch: React.PropTypes.func,
+    };
   }
 
   constructor() {

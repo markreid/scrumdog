@@ -17,7 +17,7 @@ const defaultState = {
             }
         }
     },
-    standupTitles: {},
+    standupTitles: [],
     entries: {},
     users: {},
     activeStandup: null,
@@ -267,33 +267,21 @@ function standups(state = defaultState.standups, action){
     }
 }
 
-function standupTitles(state = defaultState.standupTitles, action){
+function standupTitles(state = defaultState.standupTitles, action) {
     switch(action.type){
 
         case 'REQUEST_STANDUP_TITLES':
-            return attachSingleSyncState({}, {
-                fetching: true,
-                fetched: false,
-                failed: false
-            });
-            break;
+            return [];
 
         case 'RECEIVE_STANDUP_TITLES':
-            return Object.assign({}, action.data.entities.standupTitles);
-            break;
+            return action.data;
 
         case 'RECEIVE_REMOVE_STANDUP':
-            var freshState = Object.assign({}, state);
-            delete freshState[action.id];
-            return freshState;
-            break;
+            return state.filter(row => row.id !== action.id);
 
         case 'RECEIVE_CREATE_STANDUP':
-            // new standup, add it in
-            return Object.assign({}, state, {
-                [action.data.result]: attachSingleSyncState(action.data.entities.standups[action.data.result])
-            });
-            break;
+            const standup = action.data.entities.standups[action.data.result];
+            return [standup, ...state];
 
         default:
             return state;

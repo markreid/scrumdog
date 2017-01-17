@@ -54,7 +54,7 @@ router.get('/entries', (req, res) => {
 router.get('/standuptitles', (req, res) => {
   db.Standup.findAll({
     order: [
-    ['id', 'DESC'],
+      ['id', 'DESC'],
     ],
   })
   .then(response => res.send(response))

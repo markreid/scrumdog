@@ -67,7 +67,7 @@ export default class EntryTextarea extends Component {
   setHeight(textarea) {
     this.setState({
       style: {
-        height: 'auto',
+        height: 0,
       },
     });
     requestAnimationFrame(() => {

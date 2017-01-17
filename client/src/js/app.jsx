@@ -55,7 +55,7 @@ class App extends Component {
       <div onClick={this.toggleLeftSidebar}>
         <Header />
       </div>
-      <button onClick={this.toggleRightSidebar}>notes</button>
+      <button onClick={this.toggleRightSidebar} style={{ float: 'right' }}>notes</button>
 
       <div className={wrapperClassName}>
         <div className="sidebar sidebar-left">

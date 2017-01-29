@@ -33,6 +33,14 @@ export function changeEntryValue(payload) {
   };
 }
 
+function requestCreateEntry(standupId, userId) {
+  return {
+      type: 'REQUEST_CREATE_ENTRY',
+      standupId,
+      userId
+  };
+}
+
 // a request to save entry data to the server is in progress
 function requestSaveEntry(id) {
   return {
@@ -290,7 +298,6 @@ export function setActiveStandup(id){
         });
       }
     }
-
 
 // create an entry on the server
 export function createEntry(standupId, userId){

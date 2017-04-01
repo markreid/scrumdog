@@ -1,25 +1,23 @@
 /**
- * App.js
- * Entry point for the clientside code.
- * Will export to window.Scrumdog
+ * App.jsx
+ * Entire app component.
  */
 
 
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
 import autobind from 'autobind-decorator';
 import classnames from 'classnames';
+import { Provider } from 'react-redux';
 
-import Standup from './components/standup.jsx';
-import StandupSummary from './components/standup-summary.jsx';
-import Checklist from './components/checklist.jsx';
-import Sidebar from './components/sidebar.jsx';
-import Header from './components/header.jsx';
-import Notes from './components/notes.jsx';
+import store from '../store';
 
+import Standup from './standup.jsx';
+import StandupSummary from './standup-summary.jsx';
+import Checklist from './checklist.jsx';
+import Sidebar from './sidebar.jsx';
+import Header from './header.jsx';
+import Notes from './notes.jsx';
 
-import store from './store';
 
 @autobind
 class App extends Component {
@@ -74,17 +72,16 @@ class App extends Component {
   }
 }
 
-
 /**
  * Wraps the App component in a react-redux Provider
  * so the store state is passed in as props.
  * niiiiiiice
  */
 const ProviderWrapper = () => (
-  <Provider store={store}>
+  <Provider store={ store }>
     <App />
   </Provider>
 );
 
 
-ReactDOM.render(<ProviderWrapper />, document.querySelector('#scrumdog-application'));
+export default ProviderWrapper;

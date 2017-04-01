@@ -13,7 +13,7 @@ const models = require('./models');
 const apiRouter = require('./routes/apiv1');
 
 const app = express();
-app.use('/static', express.static('client/build'));
+app.use('/assets', express.static('client/build'));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({

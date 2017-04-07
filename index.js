@@ -41,7 +41,7 @@ const startExpress = () => {
   });
 };
 
-// you can pass --forcesync as the first argumetn to force a sync of the DB.
+// you can pass --forcesync as the first argument to force a sync of the DB.
 // todo - do this better, it's flaky.
 models.sequelize.sync({
   force: process.argv[2] === '--forcesync',

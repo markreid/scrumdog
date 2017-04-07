@@ -78,7 +78,7 @@ class App extends Component {
  * niiiiiiice
  */
 const ProviderWrapper = () => (
-  <Provider store={ store }>
+  <Provider store={store}>
     <App />
   </Provider>
 );

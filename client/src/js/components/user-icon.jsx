@@ -33,7 +33,7 @@ class UserIconComponent extends Component {
       return <UserProfile {...this.props} onSave={this.saveProfile} onCancel={this.disableEditing} />
     }
 
-    return <div className="user-icon" onClick={this.clickHandler}>{initials.toUpperCase()}</div>
+    return <button className="user-icon" onClick={this.clickHandler}>{initials.toUpperCase()}</button>
   }
 
   clickHandler(evt) {

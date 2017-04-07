@@ -253,6 +253,14 @@ router.get('/teams', (req, res) => {
   .catch(err => res.status(500).send(err));
 });
 
+router.get('/teams/:teamId', (req, res) => {
+  db.Team.findById(req.params.teamId, {
+    include: db.User,
+  })
+  .then(response => res.send(response))
+  .catch(err => res.status(500).send(err));
+});
+
 router.post('/teams', (req, res) => {
   db.Team.create(req.body)
   .then(data => res.status(201).send(data))
@@ -264,6 +272,27 @@ router.post('/teams', (req, res) => {
       res.status(500).send(err);
     }
   });
+});
+
+router.get('/teams/:teamId/users', (req, res) => {
+  db.Team.findById(req.params.teamId, {
+    include: db.User,
+  })
+  .then(response => res.send(response.Users))
+  .catch(err => res.status(500).send(err));
+});
+
+router.get('/teams/:teamId/standuptitles', (req, res) => {
+  db.Team.findById(req.params.teamId, {
+    include: {
+      model: db.Standup,
+      order: [
+        ['id', 'DESC'],
+      ],
+    },
+  })
+  .then(response => res.send(response.Standups))
+  .catch(err => res.status(500).send(err));
 });
 
 router.put('/teams/:teamId/users/:userId', (req, res) => {

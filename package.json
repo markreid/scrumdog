@@ -46,7 +46,7 @@
   },
   "scripts": {
     "build": "pack -r -m -s client/src -m js/index.js -d client/build -b app",
-    "dev": "nodemon server/index --config server/.nodemon.json",
+    "dev": "nodemon server/index --config .nodemon.json",
     "lint": "eslint .",
     "start": "node server/index",
     "test": "echo \"Error: no test specified\" && exit 1",

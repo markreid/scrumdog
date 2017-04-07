@@ -7,7 +7,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-const config = require('./config.json');
+const config = require('../config.json');
 const models = require('./models');
 
 const apiRouter = require('./routes/apiv1');
@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({
 // only one route
 app.get('/', (req, res) => {
   res.status(200).sendFile('client/build/index.html', {
-    root: __dirname,
+    root: `${__dirname}/../`,
   });
 });
 
@@ -37,7 +37,7 @@ app.use('/api/v1', apiRouter);
  */
 const startExpress = () => {
   app.listen(config.server.port, () => {
-   console.log(`Scrumdog running on ${config.server.port}`);
+    console.log(`Scrumdog running on ${config.server.port}`);
   });
 };
 

@@ -1,17 +1,16 @@
-Refactor
---------
-
-* Remove normalizr
-* Maybe chuck out redux
-* Fix the damn linting
+# Roadmap
 
 
-Big plans
----------
+## Features
+
 * teams
 
 
-Bugs, fixes
------------
-* fix linting
-* hook up redux dev tools
+## Bugs, fixes, refactor
+
+* lint
+* implement a better logger
+* redux dev tools
+* ducks pattern
+* normalizrs? yay or nay?
+* replace syncstate.failed with syncstate.error

@@ -3,20 +3,20 @@
  * Redux store implementation
  */
 
-import {createStore, applyMiddleware} from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import loggerMiddleware from 'redux-logger';
 
-import {rootReducer} from './reducers';
+import { rootReducer } from './reducers';
 
 
 const createStoreWithMiddleware = applyMiddleware(
-    thunkMiddleware
+    thunkMiddleware,
     // loggerMiddleware
 )(createStore);
 
-function configureStore(initialState){
-    return createStoreWithMiddleware(rootReducer, initialState);
+function configureStore(initialState) {
+  return createStoreWithMiddleware(rootReducer, initialState);
 }
 
 export default configureStore();

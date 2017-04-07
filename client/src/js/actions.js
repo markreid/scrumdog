@@ -412,7 +412,7 @@ export function createStandup() {
   };
 }
 
-export function createUser(modelProps){
+export function createUser(modelProps) {
   return (dispatch) => {
     dispatch(requestCreateUser());
 

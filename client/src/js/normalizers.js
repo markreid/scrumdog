@@ -3,7 +3,7 @@
  * normalizer schemas
  */
 
-import { normalize, Schema, arrayOf } from 'normalizr';
+import { Schema, arrayOf } from 'normalizr';
 
 
 const normalizeSchemas = {

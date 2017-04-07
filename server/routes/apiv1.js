@@ -2,9 +2,10 @@
  * API v1
  */
 
-const db = require('../models');
-
 const express = require('express');
+
+const db = require('../models');
+const log = require('../lib/logger');
 
 
 const router = new express.Router();
@@ -15,7 +16,7 @@ router.get('/entries', (req, res) => {
   })
   .then(response => res.send(response))
   .catch((err) => {
-    console.log(err);
+    log.error(err);
     res.status(500).send(err);
   });
 });
@@ -32,7 +33,7 @@ router.get('/laststandup', (req, res) => {
   })
   .then(response => res.send(response || {}))
   .catch((err) => {
-    console.error(err);
+    log.error(err);
     res.status(500).send(err);
   });
 });
@@ -44,7 +45,7 @@ router.get('/entries', (req, res) => {
   })
   .then(response => res.send(response))
   .catch((err) => {
-    console.log(err);
+    log.error(err);
     res.status(500).send(err);
   });
 });
@@ -77,7 +78,7 @@ router.get('/laststandup', (req, res) => {
   })
   .then(response => res.send(response || {}))
   .catch((err) => {
-    console.error(err);
+    log.error(err);
     res.status(500).send(err);
   });
 });
@@ -92,7 +93,7 @@ router.get('/standups/:id', (req, res) => {
     if (!response) return res.status(404).send();
     return res.status(200).send(response);
   }).catch((err) => {
-    console.error(err);
+    log.error(err);
     res.status(500).send(err);
   });
 });
@@ -139,7 +140,7 @@ router.delete('/users/:userId', (req, res) => {
   .then(userModel => userModel.destroy())
   .then(response => res.send(response))
   .catch((err) => {
-    console.error(err);
+    log.error(err);
     res.status(500).send(err);
   });
 });
@@ -199,7 +200,7 @@ router.delete('/entries/:entryId', (req, res) => {
   })
   .then(() => res.status(200).send())
   .catch((err) => {
-    console.error(err);
+    log.error(err);
     res.status(500).send(err);
   });
 });
@@ -238,7 +239,7 @@ router.delete('/standups/:standupId', (req, res) => {
   }).then(destroyedCount => res.status(200).send({
     destroyedCount,
   })).catch((err) => {
-    console.error(err);
+    log.error(err);
     res.status(500).send(err);
   });
 });
@@ -256,6 +257,7 @@ router.post('/teams', (req, res) => {
   db.Team.create(req.body)
   .then(data => res.status(201).send(data))
   .catch((err) => {
+    log.error(err);
     if (err.name === 'SequelizeValidationError') {
       res.status(400).send(err);
     } else {
@@ -303,7 +305,7 @@ router.get('/notes', (req, res) => {
     res.send(row);
   })
   .catch((err) => {
-    console.error(err);
+    log.error(err);
     res.status(500).send(err);
   });
 });
@@ -321,7 +323,7 @@ router.put('/notes', (req, res) => {
     res.send(row);
   })
   .catch((err) => {
-    console.error(err);
+    log.error(err);
     res.status(500).send(err);
   });
 });

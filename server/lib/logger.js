@@ -13,10 +13,14 @@ const logger = new winston.Logger({
     new winston.transports.Console({
       level,
       timestamp: () => moment().format('MMM D H:mm:s'),
-      formatter: opts => `${opts.timestamp()} ${opts.level.toUpperCase()} ${opts.message}`,
+      // formatter: opts => `${opts.timestamp()} ${opts.level.toUpperCase()} ${opts.message}`,
+      prettyPrint: true,
     }),
   ],
 });
+
+// cli mode
+logger.cli();
 
 // pipe morgan's request logs to debug
 logger.morganStream = {

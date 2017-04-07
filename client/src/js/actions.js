@@ -247,7 +247,15 @@ export function fetchStandup(id) {
 
     return fetch(`/api/v1/standups/${id}`)
     .then(response => response.json())
+    .then((json) => {
+      console.log(json);
+      return json;
+    })
     .then(json => normalize(json, normalizerSchemas.standup))
+    .then((normalized) => {
+      console.log(normalized);
+      return normalized;
+    })
     .then(normalized => dispatch(receiveStandup(normalized)));
   };
 }

@@ -37,8 +37,6 @@ function unique(arr) {
   return unique;
 }
 
-const newEntryId = -1;
-
 /**
  * Entries reducer
  * @param  {Array}  state
@@ -361,7 +359,7 @@ function attachSingleSyncState(target, syncStateOverwrite = {}) {
  * Combine the sub-reducers into one
  * @type {Object}
  */
-export const rootReducer = combineReducers({
+export default combineReducers({
   entries,
   standups,
   users,

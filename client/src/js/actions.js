@@ -7,6 +7,7 @@ import { normalize, arrayOf } from 'normalizr';
 import pick from 'lodash/pick';
 
 import normalizerSchemas from './normalizers';
+import fetcher from './lib/fetcher';
 
 
 // properties of each model that we want to _pick before syncing

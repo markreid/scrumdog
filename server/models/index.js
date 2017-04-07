@@ -8,11 +8,16 @@ const path = require('path');
 const Sequelize = require('sequelize');
 
 const config = require(`${__dirname}/../../config.json`);
+const logger = require('../lib/logger');
 
 const basename = path.basename(module.filename);
 
+const dbConfig = Object.assign({}, config.db, {
+  logging: logger.debug,
+});
+
 const { database, username, password } = config.db;
-const sequelize = new Sequelize(database, username, password, config.db);
+const sequelize = new Sequelize(database, username, password, dbConfig);
 const db = {};
 
 fs

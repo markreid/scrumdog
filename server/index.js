@@ -4,17 +4,20 @@
 
 
 const express = require('express');
-const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 
 const config = require('../config.json');
 const models = require('./models');
+const logger = require('./lib/logger');
 
 const apiRouter = require('./routes/apiv1');
 
 const app = express();
 app.use('/assets', express.static('client/build'));
-app.use(morgan('dev'));
+app.use(morgan('dev', {
+  stream: logger.morganStream,
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true,
@@ -37,7 +40,7 @@ app.use('/api/v1', apiRouter);
  */
 const startExpress = () => {
   app.listen(config.server.port, () => {
-    console.log(`Scrumdog running on ${config.server.port}`);
+    logger.info(`Scrumdog running on ${config.server.port}`);
   });
 };
 

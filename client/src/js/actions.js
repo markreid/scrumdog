@@ -35,9 +35,9 @@ export function changeEntryValue(payload) {
 
 function requestCreateEntry(standupId, userId) {
   return {
-      type: 'REQUEST_CREATE_ENTRY',
-      standupId,
-      userId
+    type: 'REQUEST_CREATE_ENTRY',
+    standupId,
+    userId,
   };
 }
 
@@ -241,133 +241,131 @@ function receiveSendNotes({ err, data }) {
 }
 
 
-export function setActiveStandup(id){
+export function fetchStandup(id) {
   return (dispatch) => {
-        // fetch it first
-        dispatch(fetchStandup(id));
+    dispatch(requestStandup(id));
 
-        return dispatch({
-          type: 'SET_ACTIVE_STANDUP',
-          id
-        });
-      }
-    };
+    return fetch(`/api/v1/standups/${id}`)
+    .then(response => response.json())
+    .then(json => normalize(json, normalizerSchemas.standup))
+    .then(normalized => dispatch(receiveStandup(normalized)));
+  };
+}
 
-    export function fetchStandup(id){
-      return (dispatch) => {
-        dispatch(requestStandup(id));
+export function setActiveStandup(id) {
+  return (dispatch) => {
+    // fetch it first
+    dispatch(fetchStandup(id));
 
-        return fetch('/api/v1/standups/' + id)
-        .then(response => response.json())
-        .then(json => normalize(json, normalizerSchemas.standup))
-        .then(normalized => dispatch(receiveStandup(normalized)));
-      }
-    }
+    return dispatch({
+      type: 'SET_ACTIVE_STANDUP',
+      id,
+    });
+  };
+}
+
 
 /**
  * Sync an entry value with the server
  * @param  {[type]} payload [description]
  * @return {[type]}         [description]
  */
- export function saveEntry(entry){
+export function saveEntry(entry) {
   return (dispatch) => {
-        // let the UI know we've requested a save
-        dispatch(requestSaveEntry(entry.id));
+    // let the UI know we've requested a save
+    dispatch(requestSaveEntry(entry.id));
 
-        var entryProps = pick(entry, modelProps.entry);
+    const entryProps = pick(entry, modelProps.entry);
 
-        return fetch('/api/v1/entries/' + entry.id, {
-          method: 'PUT',
-          body: JSON.stringify(entryProps),
-          headers: ajaxHeaders
-        })
-        .then(function(response){
-          if(response.status >= 400){
-            throw new Error('CRAP');
-          }
-          return response;
-        })
-        .then(response => response.json())
-        .then(json => normalize(json, normalizerSchemas.entry))
-        .then(normalized => {
-          dispatch(receiveEntry(normalized));
-        }).catch(function(err){
-          console.error(err);
-          console.trace();
-          dispatch(failSaveEntry(entry.id));
-        });
+    return fetch(`/api/v1/entries/${entry.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(entryProps),
+      headers: ajaxHeaders,
+    })
+    .then((response) => {
+      if (response.status >= 400) {
+        throw new Error('CRAP');
       }
-    }
+      return response;
+    })
+    .then(response => response.json())
+    .then(json => normalize(json, normalizerSchemas.entry))
+    .then((normalized) => {
+      dispatch(receiveEntry(normalized));
+    })
+    .catch((err) => {
+      console.error(err);
+      console.trace();
+      dispatch(failSaveEntry(entry.id));
+    });
+  };
+}
 
 // create an entry on the server
-export function createEntry(standupId, userId){
+export function createEntry(standupId, userId) {
   return (dispatch) => {
     dispatch(requestCreateEntry(standupId, userId));
 
-    var entryProps = {
+    const entryProps = {
       StandupId: standupId,
-      UserId: userId
+      UserId: userId,
     };
 
     return fetch('/api/v1/entries', {
       method: 'POST',
       body: JSON.stringify(entryProps),
-      headers: ajaxHeaders
+      headers: ajaxHeaders,
     })
-    .then(function(response){
-      if(response.status >= 400){
-                // todo - if the status is an error then we need to
-                // parse the json and bubble that. not sure how...?
-                throw new Error('ERROR');
-              }
-              return response;
-            })
+    .then((response) => {
+      if (response.status >= 400) {
+        // todo - if the status is an error then we need to
+        // parse the json and bubble that. not sure how...?
+        throw new Error('ERROR');
+      }
+      return response;
+    })
     .then(response => response.json())
     .then(json => normalize(json, normalizerSchemas.entry))
-    .then(normalized => {
-      dispatch(receiveEntry(normalized));
-    });
-  }
+    .then(normalized => dispatch(receiveEntry(normalized)));
+  };
 }
 
 
-export function removeEntry(entryId, standupId){
+export function removeEntry(entryId, standupId) {
   return (dispatch) => {
     dispatch(requestRemoveEntry(entryId, standupId));
 
-    return fetch('/api/v1/entries/' + entryId, {
-      method: 'DELETE'
+    return fetch(`/api/v1/entries/${entryId}`, {
+      method: 'DELETE',
     })
-    .then(function(response){
-      if(response.status >= 400){
+    .then((response) => {
+      if (response.status >= 400) {
         throw new Error('ERROR');
       }
       dispatch(receiveRemoveEntry(entryId, standupId));
     });
-  }
+  };
 }
 
 
 // fetch standup data from the REST API
 // dispatches normalized standup, entries and users data
-export function fetchLastStandup(){
+export function fetchLastStandup() {
   return (dispatch) => {
     dispatch(requestLastStandup());
 
     return fetch('/api/v1/laststandup')
     .then(response => response.json())
     .then(json => normalize(json, normalizerSchemas.standup))
-    .then(function(normalized){
-            // if we got nothing...
-            if(!normalized.result){
-              return dispatch(requestLastStandupFailed(404));
-            }
-            return dispatch(receiveLastStandup(normalized));
-          })
-    .catch(err => {
-      console.error(err.stack);
-    });
-  }
+    .then((normalized) => {
+      // if we got nothing...
+      if (!normalized.result) {
+        return dispatch(requestLastStandupFailed(404));
+      }
+      return dispatch(receiveLastStandup(normalized));
+    })
+    .catch(err => console.error(err.stack));
+  };
 }
 
 
@@ -383,132 +381,125 @@ export function fetchStandupTitles() {
 }
 
 
-export function fetchUsers(){
-    // todo - only do this once unless explicitly asked?
-    return (dispatch) => {
-      dispatch(requestUsers());
+export function fetchUsers() {
+  // todo - only do this once unless explicitly asked?
+  return (dispatch) => {
+    dispatch(requestUsers());
 
-      return fetch('/api/v1/users')
-      .then(response => response.json())
-      .then(json => normalize(json, arrayOf(normalizerSchemas.user)))
-      .then(normalized => dispatch(receiveUsers(normalized)));
-    }
-  }
+    return fetch('/api/v1/users')
+    .then(response => response.json())
+    .then(json => normalize(json, arrayOf(normalizerSchemas.user)))
+    .then(normalized => dispatch(receiveUsers(normalized)));
+  };
+}
 
-  export function createStandup(){
-    return (dispatch) => {
-      dispatch(requestCreateStandup());
+export function createStandup() {
+  return (dispatch) => {
+    dispatch(requestCreateStandup());
 
-      return fetch('/api/v1/standups', {
-        method: 'POST'
-      })
-      .then(response => response.json())
-      .then(function(json){
-            // for now, set Entries to an empty array
-            // but soon the API will populate it itself
-            json.Entries = [];
-            return normalize(json, normalizerSchemas.standup)
-          })
-      .then(normalized => dispatch(receiveCreateStandup(normalized)));
-    }
-  }
+    return fetch('/api/v1/standups', {
+      method: 'POST',
+    })
+    .then(response => response.json())
+    .then((json) => {
+      // for now, set Entries to an empty array
+      // but soon the API will populate it itself
+      // eslint-disable-next-line no-param-reassign
+      json.Entries = [];
+      return normalize(json, normalizerSchemas.standup);
+    })
+    .then(normalized => dispatch(receiveCreateStandup(normalized)));
+  };
+}
 
-  export function createUser(modelProps){
-    return (dispatch) => {
-      dispatch(requestCreateUser());
+export function createUser(modelProps){
+  return (dispatch) => {
+    dispatch(requestCreateUser());
 
-      return fetch('/api/v1/users', {
-        method: 'POST',
-        body: JSON.stringify(modelProps),
-        headers: ajaxHeaders
-      })
-      .then(response => response.json())
-      .then(json => normalize(json, normalizerSchemas.user))
-      .then(normalized => dispatch(receiveCreateUser(normalized)));
-    }
-  }
+    return fetch('/api/v1/users', {
+      method: 'POST',
+      body: JSON.stringify(modelProps),
+      headers: ajaxHeaders,
+    })
+    .then(response => response.json())
+    .then(json => normalize(json, normalizerSchemas.user))
+    .then(normalized => dispatch(receiveCreateUser(normalized)));
+  };
+}
 
-  export function updateUser(props){
-    return (dispatch) => {
-      dispatch(requestUpdateUser());
-      return fetch(`/api/v1/users/${props.id}`, {
-        method: 'PUT',
-        body: JSON.stringify(props),
-        headers: ajaxHeaders
-      })
-      .then(response => response.json())
-      .then(json => normalize(json, normalizerSchemas.user))
-      .then(normalized => dispatch(receiveUpdateUser(normalized)));
-    }
-  }
+export function updateUser(props) {
+  return (dispatch) => {
+    dispatch(requestUpdateUser());
+    return fetch(`/api/v1/users/${props.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(props),
+      headers: ajaxHeaders,
+    })
+    .then(response => response.json())
+    .then(json => normalize(json, normalizerSchemas.user))
+    .then(normalized => dispatch(receiveUpdateUser(normalized)));
+  };
+}
 
-  export function removeUser(userId){
-    return (dispatch) => {
-      dispatch(requestRemoveUser(userId));
+export function removeUser(userId) {
+  return (dispatch) => {
+    dispatch(requestRemoveUser(userId));
 
-      return fetch('/api/v1/users/' + userId, {
-        method: 'DELETE'
-      })
-      .then(response => response.json())
-      .then(function(json){
-        return json;
-      })
-      .then(function(){
-        dispatch(receiveRemoveUser(userId));
-      });
-    }
-  }
+    return fetch(`/api/v1/users/${userId}`, {
+      method: 'DELETE',
+    })
+    .then(response => response.json())
+    .then(() => {
+      dispatch(receiveRemoveUser(userId));
+    });
+  };
+}
 
-  export function removeStandup(standupId){
-    return (dispatch) => {
-      dispatch(requestRemoveStandup(standupId));
+export function removeStandup(standupId) {
+  return (dispatch) => {
+    dispatch(requestRemoveStandup(standupId));
 
-      return fetch('/api/v1/standups/' + standupId, {
-        method: 'DELETE'
-      })
-      .then(response => response.json())
-      .then(function(json){
-        return json
-      })
-      .then(function(){
-        dispatch(receiveRemoveStandup(standupId));
-      });
-    }
-  }
+    return fetch(`/api/v1/standups/${standupId}`, {
+      method: 'DELETE',
+    })
+    .then(response => response.json())
+    .then(() => dispatch(receiveRemoveStandup(standupId)));
+  };
+}
 
-  export function fetchNotes() {
-    return (dispatch) => {
-      dispatch(requestFetchNotes());
+export function fetchNotes() {
+  return (dispatch) => {
+    dispatch(requestFetchNotes());
 
-      return fetch('/api/v1/notes')
-      .then(response => response.json())
-      .then(data => {
-        dispatch(receiveFetchNotes({ data }));
-      })
-      .catch(err => {
-        dispatch(receiveFetchNotes({ err }));
-      });
-    }
-  }
+    return fetch('/api/v1/notes')
+    .then(response => response.json())
+    .then((data) => {
+      dispatch(receiveFetchNotes({ data }));
+    })
+    .catch((err) => {
+      dispatch(receiveFetchNotes({ err }));
+    });
+  };
+}
 
-  export function sendNotes(notes) {
-    return (dispatch) => {
-      dispatch(requestSendNotes());
+export function sendNotes(notes) {
+  return (dispatch) => {
+    dispatch(requestSendNotes());
 
-      return fetch('/api/v1/notes', {
-        method: 'PUT',
-        body: JSON.stringify({
-          notes,
-        }),
-        headers: ajaxHeaders,
-      })
-      .then(response => response.json())
-      .then(data => {
-        dispatch(receiveSendNotes({ data }));
-        return data.notes;
-      })
-      .catch(err => {
-        dispatch(receiveSendNotes({ err }));
-      });
-    };
-  }
+    return fetch('/api/v1/notes', {
+      method: 'PUT',
+      body: JSON.stringify({
+        notes,
+      }),
+      headers: ajaxHeaders,
+    })
+    .then(response => response.json())
+    .then((data) => {
+      dispatch(receiveSendNotes({ data }));
+      return data.notes;
+    })
+    .catch((err) => {
+      dispatch(receiveSendNotes({ err }));
+    });
+  };
+}

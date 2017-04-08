@@ -5,7 +5,9 @@
  */
 
 const headers = new Headers();
+headers.set('Content-Type', 'application/json');
 const credentials = 'same-origin';
+
 
 const fetcher = (path, opts) => fetch(path, {
   headers,

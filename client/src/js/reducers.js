@@ -6,6 +6,8 @@
 import { combineReducers } from 'redux';
 import _ from 'lodash';
 
+import { teamsReducer, activeTeamReducer } from './ducks/teams';
+
 // todo - cleanup
 const defaultState = {
   standups: {
@@ -31,10 +33,10 @@ const defaultState = {
 // return an unique array
 function unique(arr) {
   const set = new Set();
-  const unique = [];
+  const uniqueArray = [];
   arr.forEach(el => set.add(el));
-  set.forEach(el => unique.push(el));
-  return unique;
+  set.forEach(el => uniqueArray.push(el));
+  return uniqueArray;
 }
 
 /**
@@ -187,6 +189,10 @@ function activeStandup(state = defaultState.activeStandup, action) {
       break;
 
   }
+}
+
+function activeTeam(state = defaultState.activeTeam, action) {
+  return state;
 }
 
 function standups(state = defaultState.standups, action) {
@@ -366,4 +372,6 @@ export default combineReducers({
   standupTitles,
   activeStandup,
   notes,
+  teams: teamsReducer,
+  activeTeam: activeTeamReducer,
 });

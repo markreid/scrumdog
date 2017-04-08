@@ -13,5 +13,6 @@ module.exports = {
       "devDependencies": ["client/src/**/*"]
     }],
     "no-console": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
   }
 };

@@ -7,7 +7,7 @@
 import React, { Component } from 'react';
 import autobind from 'autobind-decorator';
 import classnames from 'classnames';
-import { Provider } from 'react-redux';
+import { Provider, connect } from 'react-redux';
 
 import store from '../store';
 
@@ -17,6 +17,7 @@ import Checklist from './checklist.jsx';
 import Sidebar from './sidebar.jsx';
 import Header from './header.jsx';
 import Notes from './notes.jsx';
+import Teams from './teams.jsx';
 
 
 @autobind
@@ -49,6 +50,12 @@ class App extends Component {
       'show-right': showSidebar === 2,
     });
 
+    const { activeTeam } = this.props;
+
+    if (!activeTeam) {
+      return <Teams />;
+    }
+
     return (<div>
       <div onClick={this.toggleLeftSidebar}>
         <Header />
@@ -72,14 +79,16 @@ class App extends Component {
   }
 }
 
-/**
- * Wraps the App component in a react-redux Provider
- * so the store state is passed in as props.
- * niiiiiiice
- */
+const mapStateToProps = state => ({
+  activeTeam: state.activeTeam,
+});
+
+const ConnectedApp = connect(mapStateToProps)(App)
+
+// Wrap app in a Provider so redux parts get passed in to context
 const ProviderWrapper = () => (
   <Provider store={store}>
-    <App />
+    <ConnectedApp />
   </Provider>
 );
 

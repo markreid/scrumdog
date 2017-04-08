@@ -41,6 +41,7 @@
     "react": "^15.3.2",
     "react-dom": "^15.4.2",
     "react-redux": "^4.4.5",
+    "recompose": "^0.22.0",
     "redux": "^3.6.0",
     "redux-logger": "^2.6.1",
     "redux-thunk": "^2.1.0"
@@ -48,7 +49,7 @@
   "scripts": {
     "build": "pack -r -m -s client/src -m js/index.js -d client/build -b app",
     "dev": "nodemon server/index --config .nodemon.json",
-    "lint": "eslint .",
+    "lint": "eslint . --ext js,jsx",
     "start": "node server/index",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "pack -r -m -w --src client/src --main js/index.js -d client/build -b app --proxy 4040"

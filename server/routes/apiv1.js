@@ -261,6 +261,17 @@ router.get('/teams/:teamId', (req, res) => {
   .catch(err => res.status(500).send(err));
 });
 
+router.delete('/teams/:teamId', (req, res) => {
+  db.Team.findById(req.params.teamId)
+  .then((team) => {
+    if (!team) {
+      return res.status(404).send({});
+    }
+    return team.destroy().then(() => res.status(200).send({}));
+  })
+  .catch(err => res.status(500).send(err));
+});
+
 router.post('/teams', (req, res) => {
   db.Team.create(req.body)
   .then(data => res.status(201).send(data))

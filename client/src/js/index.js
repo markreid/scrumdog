@@ -5,6 +5,6 @@
  * we need that's not explicitly imported elsewhere.
  */
 
-import '../css/style.css';
+import '../css/style.scss';
 
 export { default } from './components/app.jsx';

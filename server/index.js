@@ -7,7 +7,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
-const config = require('../config.json');
 const models = require('./models');
 const logger = require('./lib/logger');
 
@@ -39,8 +38,8 @@ app.use('/api/v1', apiRouter);
  * Start the Express server
  */
 const startExpress = () => {
-  app.listen(config.server.port, () => {
-    logger.info(`Scrumdog running on ${config.server.port}`);
+  app.listen(process.env.PORT || 4040, () => {
+    logger.info(`Scrumdog running on ${process.env.PORT || 4040}`);
   });
 };
 

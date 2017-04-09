@@ -1,0 +1,7 @@
+{
+  "host": "scrumdog.sqlite",
+  "database": "scrumdog",
+  "username": null,
+  "password": null,
+  "dialect": "sqlite"
+}

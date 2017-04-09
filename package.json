@@ -50,6 +50,8 @@
     "build": "pack -r -m -s client/src -m js/index.js -d client/build -b app",
     "dev": "nodemon server/index --config .nodemon.json",
     "lint": "eslint . --ext js,jsx",
+    "migrate": "sequelize db:migrate",
+    "migrate:undo": "sequelize db:migrate:undo",
     "start": "node server/index",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "pack -r -m -w --src client/src --main js/index.js -d client/build -b app --proxy 4040"

@@ -202,6 +202,7 @@ export const teamsReducer = (state = defaultState, action) => {
       }
 
       const teams = state.data.slice();
+      data.Users = data.Users || [];
       teams.push(data);
       return {
         data: teams,

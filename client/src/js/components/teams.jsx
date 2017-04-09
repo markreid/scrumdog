@@ -56,7 +56,7 @@ class Teams extends Component {
     const { showAdd } = this.state;
 
     return (<div className="teams">
-      <h2>Select a Team</h2>
+      <h1>Select a Team</h1>
 
       <div className="teams-list">
         {teams.map(team => <TeamListItem key={team.id} {...team} />)}

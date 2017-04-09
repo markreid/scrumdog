@@ -10,6 +10,7 @@ import autobind from 'autobind-decorator';
 import store from '../store';
 import { setActiveTeam, removeTeam } from '../ducks/teams';
 
+import TeamUsers from './team-users';
 
 @autobind
 class TeamListItem extends Component {
@@ -44,7 +45,7 @@ class TeamListItem extends Component {
 
 
   render() {
-    const { name, id } = this.props;
+    const { name, id, Users } = this.props;
     const { showDetail, confirmRemove } = this.state;
 
     return (<div className="team-list-item">
@@ -62,6 +63,10 @@ class TeamListItem extends Component {
       </header>
 
       {showDetail && (<div className="team-list-item__detail">
+        <h2>Users</h2>
+        <TeamUsers {...this.props} />
+
+        <h2>Remove Team</h2>
         <button onClick={this.toggleConfirmRemove} className="btn">Remove team</button>
         {confirmRemove && (
           <button onClick={this.removeTeam} className="btn alt">I am serious.</button>

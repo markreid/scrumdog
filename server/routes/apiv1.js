@@ -309,6 +309,9 @@ router.get('/teams/:teamId/standuptitles', (req, res) => {
 router.put('/teams/:teamId/users/:userId', (req, res) => {
   db.Team.findById(req.params.teamId)
   .then(team => team.addUser(req.params.userId))
+  .then(() => db.Team.findById(req.params.teamId, {
+    include: db.User,
+  }))
   .then(response => res.status(201).send(response))
   .catch(err => res.status(500).send(err));
 });
@@ -316,6 +319,9 @@ router.put('/teams/:teamId/users/:userId', (req, res) => {
 router.delete('/teams/:teamId/users/:userId', (req, res) => {
   db.Team.findById(req.params.teamId)
   .then(team => team.removeUser(req.params.userId))
+  .then(() => db.Team.findById(req.params.teamId, {
+    include: db.User,
+  }))
   .then(response => res.status(201).send(response))
   .catch(err => res.status(500).send(err));
 });

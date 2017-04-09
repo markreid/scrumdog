@@ -6,6 +6,7 @@
 
 import fetcher from '../lib/fetcher';
 import store from '../store';
+import { tapLog } from '../utils';
 
 function requestFetchTeams() {
   return {
@@ -51,6 +52,39 @@ function receiveRemoveTeam(id) {
   };
 }
 
+function requestAddUserToTeam(data) {
+  return {
+    type: 'REQUEST_ADD_USER_TO_TEAM',
+    data,
+  };
+}
+
+function receiveAddUserToTeam(payload) {
+  const { data, error } = payload;
+  return {
+    type: 'RECEIVE_ADD_USER_TO_TEAM',
+    data,
+    error,
+  };
+}
+
+function requestRemoveUserFromTeam(data) {
+  return {
+    type: 'REQUEST_REMOVE_USER_FROM_TEAM',
+    data,
+  };
+}
+
+function receiveRemoveUserFromTeam(payload) {
+  const { data, error } = payload;
+  return {
+    type: 'RECEIVE_REMOVE_USER_FROM_TEAM',
+    data,
+    error,
+  };
+}
+
+// fetch all teams
 export function fetchTeams() {
   return (dispatch) => {
     dispatch(requestFetchTeams());
@@ -60,6 +94,7 @@ export function fetchTeams() {
   };
 }
 
+// add a team. requires .name
 export function addTeam(payload) {
   return (dispatch) => {
     dispatch(requestAddTeam());
@@ -72,6 +107,7 @@ export function addTeam(payload) {
   };
 }
 
+// remove a team by id
 export function removeTeam(id) {
   return (dispatch) => {
     dispatch(requestRemoveTeam(id));
@@ -83,6 +119,7 @@ export function removeTeam(id) {
   };
 }
 
+// set the active team
 export function setActiveTeam(data) {
   return dispatch => dispatch({
     type: 'SET_ACTIVE_TEAM',
@@ -90,10 +127,49 @@ export function setActiveTeam(data) {
   });
 }
 
+// set the active team to null
 export function resetActiveTeam() {
   return dispatch => dispatch({
     type: 'RESET_ACTIVE_TEAM',
   });
+}
+
+// add a user to the team.
+// requires teamId, userId
+export function addUserToTeam(data) {
+  const { userId, teamId } = data;
+  return (dispatch) => {
+    dispatch(requestAddUserToTeam({
+      userId,
+      teamId,
+    }));
+    return fetcher(`api/v1/teams/${teamId}/users/${userId}`, {
+      method: 'PUT',
+    })
+    .then(team => dispatch(receiveAddUserToTeam({
+      data: team,
+    })))
+    .catch(error => dispatch(receiveAddUserToTeam({ error })));
+  };
+}
+
+// remove a user from a team.
+// requires teamId, userId
+export function removeUserFromTeam(data) {
+  const { userId, teamId } = data;
+  return (dispatch) => {
+    dispatch(requestRemoveUserFromTeam({
+      userId,
+      teamId,
+    }));
+    return fetcher(`/api/v1/teams/${teamId}/users/${userId}`, {
+      method: 'DELETE',
+    })
+    .then(team => dispatch(receiveRemoveUserFromTeam({
+      data: team,
+    })))
+    .catch(error => dispatch(receiveRemoveUserFromTeam({ error })));
+  };
 }
 
 const defaultState = {
@@ -144,7 +220,29 @@ export const teamsReducer = (state = defaultState, action) => {
       }
 
       // filter out the removed one
-      const teams = state.data.slice().filter(team => team.id !== id);
+      const teams = state.data.filter(team => team.id !== id);
+      return {
+        data: teams,
+        error: null,
+      };
+    }
+
+    case 'RECEIVE_ADD_USER_TO_TEAM':
+    case 'RECEIVE_REMOVE_USER_FROM_TEAM': {
+      const { data, error } = action;
+      console.log(action);
+      // api returns the team
+      if (error) {
+        return {
+          data: state.data,
+          error,
+        };
+      }
+
+      // replace it
+      const teams = state.data.map((team) => {
+        return team.id === data.id ? data : team;
+      });
       return {
         data: teams,
         error: null,

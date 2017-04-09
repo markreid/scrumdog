@@ -17,6 +17,14 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.NOW,
     },
     title: DataTypes.STRING,
+    TeamId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Teams',
+        key: 'id',
+      },
+      allowNull: false,
+    },
   });
 
   return Standup;

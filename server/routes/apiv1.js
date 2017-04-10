@@ -10,7 +10,6 @@ const log = require('../lib/logger');
 
 const router = new express.Router();
 
-
 // fetch the team's last standup
 router.get('/teams/:teamId/laststandup', (req, res) => {
   db.Standup.findOne({
@@ -281,9 +280,33 @@ router.post('/teams', (req, res) => {
     log.error(err);
     if (err.name === 'SequelizeValidationError') {
       res.status(400).send(err);
-  } else {
+    } else {
       res.status(500).send(err);
     }
+  });
+});
+
+// update a team
+router.put('/teams/:teamId', (req, res) => {
+  db.Team.findById(req.params.teamId)
+  .then((team) => {
+    if (!team) {
+      return res.status(404).send({});
+    }
+
+    // can mutate name only
+    const { name } = req.body;
+    return team.updateAttributes({
+      name,
+    })
+    .then(() => db.Team.findById(req.params.teamId, {
+      include: db.Usere,
+    })
+    .then(updatedTeam => res.status(200).send(updatedTeam)));
+  })
+  .catch((error) => {
+    log.error(error);
+    res.status(500).send(error);
   });
 });
 

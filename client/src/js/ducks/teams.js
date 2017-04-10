@@ -81,6 +81,21 @@ function receiveRemoveUserFromTeam({ data, error }) {
   };
 }
 
+function requestUpdateTeam(data) {
+  return {
+    type: 'REQUEST_UPDATE_TEAM',
+    data,
+  };
+}
+
+function receiveUpdateTeam({ data, error }) {
+  return {
+    type: 'RECEIVE_UPDATE_TEAM',
+    data,
+    error,
+  };
+}
+
 // set the active team
 export function setActiveTeam(data) {
   return dispatch => dispatch({
@@ -166,79 +181,73 @@ export function removeUserFromTeam(props) {
   };
 }
 
+// update a team. you can only change the name.
+export function updateTeam(props) {
+  const { id, name } = props;
+  return (dispatch) => {
+    dispatch(requestUpdateTeam({
+      id,
+      name,
+    }));
+    return fetcher(`/api/v1/teams/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        name,
+      }),
+    })
+    .then(data => dispatch(receiveUpdateTeam({ data })))
+    .catch(error => dispatch(receiveUpdateTeam({ error })));
+  };
+}
 
+
+// todo - skip data, just make this an array?
 const DEFAULT_STATE = {
   data: [],
-  error: null,
 };
 
 export const teamsReducer = (state = DEFAULT_STATE, action) => {
+  // errors no-op here, they get handled by
+  // the errors reducer in reducers.js
+  if (action.error) {
+    return state;
+  }
+
   switch (action.type) {
 
     case 'RECEIVE_FETCH_TEAMS': {
-      const { data, error } = action;
-      return error ? {
-        data: [],
-        error,
-      } : {
-        data,
-        error: null,
+      return {
+        data: action.data,
       };
     }
 
     case 'RECEIVE_ADD_TEAM': {
-      const { data, error } = action;
-
-      if (error) {
-        return {
-          data: state.data,
-          error,
-        };
-      }
-
+      const { data } = action;
       const teams = state.data.slice();
       data.Users = data.Users || [];
       teams.push(data);
       return {
         data: teams,
-        error: null,
       };
     }
 
     case 'RECEIVE_REMOVE_TEAM': {
-      const { id, error } = action;
-
-      if (error) {
-        return {
-          data: state.data,
-          error,
-        };
-      }
-
       // filter out the removed one
+      const { id } = action;
       const teams = state.data.filter(team => team.id !== id);
       return {
         data: teams,
-        error: null,
       };
     }
 
+    // actions that update/replace a team
+    case 'RECEIVE_UPDATE_TEAM':
     case 'RECEIVE_ADD_USER_TO_TEAM':
     case 'RECEIVE_REMOVE_USER_FROM_TEAM': {
-      const { data, error } = action;
-      // api returns the team
-      if (error) {
-        return {
-          data: state.data,
-          error,
-        };
-      }
-
-      // replace it
+      const { data } = action;
       const teams = state.data.map(team => (team.id === data.id ? data : team));
       return {
         data: teams,
-        error: null,
       };
     }
 

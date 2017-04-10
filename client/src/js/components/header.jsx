@@ -20,15 +20,17 @@ class Header extends Component {
   render() {
     const { activeStandup, activeTeam } = this.props;
 
-    const title = moment(activeStandup.date).format('dddd Do MMMM');
+    const title = activeStandup ?
+      moment(activeStandup.date).format('dddd Do MMMM')
+      : '';
     return (<header id="header">
-      <b>Scrumdog</b> { title }
+      <b onClick={this.props.onLogoClick}>Scrumdog</b> { title }
       <span onClick={this.resetActiveTeam}>{ activeTeam.name }</span>
     </header>);
   }
 }
 
 export default connect(state => ({
-  activeStandup: state.standups[state.activeStandup],
+  activeStandup: state.activeStandup,
   activeTeam: state.activeTeam,
 }))(Header);

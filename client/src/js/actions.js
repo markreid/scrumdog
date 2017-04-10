@@ -77,17 +77,32 @@ function requestLastStandupFailed(err) {
   };
 }
 
-function receiveEntry(data) {
+function receiveEntry({ data, error }) {
   return {
     type: 'RECEIVE_ENTRY',
     data,
+    error,
   };
 }
 
-function requestUsers(data) {
+function receiveSaveEntry({ data, error }) {
+  return {
+    type: 'RECEIVE_SAVE_ENTRY',
+    data,
+    error,
+  };
+}
+
+function requestUsers() {
   return {
     type: 'REQUEST_USERS',
-    data,
+  };
+}
+
+function requestTeamUsers(teamId) {
+  return {
+    type: 'REQUEST_TEAM_USERS',
+    teamId,
   };
 }
 
@@ -170,9 +185,10 @@ function receiveRemoveStandup(id) {
   };
 }
 
-function requestStandupTitles() {
+function requestStandupTitles(teamId) {
   return {
     type: 'REQUEST_STANDUP_TITLES',
+    teamId,
   };
 }
 
@@ -197,17 +213,19 @@ function requestCreateStandup() {
   };
 }
 
-function receiveCreateStandup(data) {
+function receiveCreateStandup({ data, error }) {
   return {
     type: 'RECEIVE_CREATE_STANDUP',
     data,
+    error,
   };
 }
 
-function receiveStandup(data) {
+function receiveStandup({ data, error }) {
   return {
     type: 'RECEIVE_STANDUP',
     data,
+    error,
   };
 }
 
@@ -246,18 +264,9 @@ export function fetchStandup(id) {
   return (dispatch) => {
     dispatch(requestStandup(id));
 
-    return fetch(`/api/v1/standups/${id}`)
-    .then(response => response.json())
-    .then((json) => {
-      console.log(json);
-      return json;
-    })
-    .then(json => normalize(json, normalizerSchemas.standup))
-    .then((normalized) => {
-      console.log(normalized);
-      return normalized;
-    })
-    .then(normalized => dispatch(receiveStandup(normalized)));
+    return fetcher(`/api/v1/standups/${id}`)
+    .catch(error => dispatch(receiveStandup({ error })))
+    .then(data => dispatch(receiveStandup({ data })));
   };
 }
 
@@ -286,31 +295,16 @@ export function saveEntry(entry) {
 
     const entryProps = pick(entry, modelProps.entry);
 
-    return fetch(`/api/v1/entries/${entry.id}`, {
+    return fetcher(`/api/v1/entries/${entry.id}`, {
       method: 'PUT',
       body: JSON.stringify(entryProps),
-      headers: ajaxHeaders,
     })
-    .then((response) => {
-      if (response.status >= 400) {
-        throw new Error('CRAP');
-      }
-      return response;
-    })
-    .then(response => response.json())
-    .then(json => normalize(json, normalizerSchemas.entry))
-    .then((normalized) => {
-      dispatch(receiveEntry(normalized));
-    })
-    .catch((err) => {
-      console.error(err);
-      console.trace();
-      dispatch(failSaveEntry(entry.id));
-    });
+    .catch(error => dispatch(receiveSaveEntry({ error })))
+    .then(data => dispatch(receiveSaveEntry({ data })));
   };
 }
 
-// create an entry on the server
+// Add an entry to a standup
 export function createEntry(standupId, userId) {
   return (dispatch) => {
     dispatch(requestCreateEntry(standupId, userId));
@@ -320,22 +314,12 @@ export function createEntry(standupId, userId) {
       UserId: userId,
     };
 
-    return fetch('/api/v1/entries', {
+    return fetcher('/api/v1/entries', {
       method: 'POST',
       body: JSON.stringify(entryProps),
-      headers: ajaxHeaders,
     })
-    .then((response) => {
-      if (response.status >= 400) {
-        // todo - if the status is an error then we need to
-        // parse the json and bubble that. not sure how...?
-        throw new Error('ERROR');
-      }
-      return response;
-    })
-    .then(response => response.json())
-    .then(json => normalize(json, normalizerSchemas.entry))
-    .then(normalized => dispatch(receiveEntry(normalized)));
+    .catch(error => dispatch(receiveEntry({ error })))
+    .then(data => dispatch(receiveEntry({ data })));
   };
 }
 
@@ -359,11 +343,11 @@ export function removeEntry(entryId, standupId) {
 
 // fetch standup data from the REST API
 // dispatches normalized standup, entries and users data
-export function fetchLastStandup() {
+export function fetchLastStandup(teamId) {
   return (dispatch) => {
-    dispatch(requestLastStandup());
+    dispatch(requestLastStandup(teamId));
 
-    return fetch('/api/v1/laststandup')
+    return fetch(`/api/v1/teams/${teamId}/laststandup`)
     .then(response => response.json())
     .then(json => normalize(json, normalizerSchemas.standup))
     .then((normalized) => {
@@ -378,11 +362,11 @@ export function fetchLastStandup() {
 }
 
 
-export function fetchStandupTitles() {
+export function fetchStandupTitles(teamId) {
   return (dispatch) => {
-    dispatch(requestStandupTitles());
+    dispatch(requestStandupTitles(teamId));
 
-    return fetch('/api/v1/standuptitles')
+    return fetch(`/api/v1/teams/${teamId}/standuptitles`)
     .then(response => response.json())
     .then(data => dispatch(receiveStandupTitles({ data })))
     .catch(err => dispatch(receiveStandupTitles({ err })));
@@ -391,7 +375,6 @@ export function fetchStandupTitles() {
 
 
 export function fetchUsers() {
-  // todo - only do this once unless explicitly asked?
   return (dispatch) => {
     dispatch(requestUsers());
 
@@ -402,22 +385,27 @@ export function fetchUsers() {
   };
 }
 
-export function createStandup() {
+export function fetchTeamUsers(teamId) {
   return (dispatch) => {
-    dispatch(requestCreateStandup());
+    dispatch(requestTeamUsers(teamId));
 
-    return fetch('/api/v1/standups', {
+    return fetch(`/api/v1/teams/${teamId}/users`)
+    .then(response => response.json())
+    .then(json => normalize(json, arrayOf(normalizerSchemas.user)))
+    .then(normalized => dispatch(receiveUsers(normalized)))
+    .catch(error => console.error(error));
+  };
+}
+
+export function createStandup(teamId) {
+  return (dispatch) => {
+    dispatch(requestCreateStandup(teamId));
+
+    return fetcher(`/api/v1/teams/${teamId}/standups`, {
       method: 'POST',
     })
-    .then(response => response.json())
-    .then((json) => {
-      // for now, set Entries to an empty array
-      // but soon the API will populate it itself
-      // eslint-disable-next-line no-param-reassign
-      json.Entries = [];
-      return normalize(json, normalizerSchemas.standup);
-    })
-    .then(normalized => dispatch(receiveCreateStandup(normalized)));
+    .catch(error => dispatch(receiveCreateStandup({ error })))
+    .then(data => dispatch(receiveCreateStandup({ data })));
   };
 }
 

@@ -49,14 +49,20 @@ class UserIconComponent extends Component {
 
   render() {
     const names = this.props.fullName.split(' ');
-    const initials = names.length > 1 ? (names[0][0] + names[names.length - 1][0]) : names[0][0] + names[0][names[0].length - 1];
+    const initials = names.length > 1 ?
+      (names[0][0] + names[names.length - 1][0]) :
+      names[0][0] + names[0][names[0].length - 1];
 
     if (this.state.editing) {
-      return <UserProfile {...this.props} onSave={this.saveProfile} onCancel={this.disableEditing} />;
+      return (<UserProfile
+        {...this.props}
+        onSave={this.saveProfile}
+        onCancel={this.disableEditing}
+      />);
     }
 
     return <button className="user-icon" onClick={this.clickHandler}>{initials.toUpperCase()}</button>;
   }
 }
 
-export default connect((state, ownProps) => state.users[ownProps.id] || {})(UserIconComponent);
+export default UserIconComponent;

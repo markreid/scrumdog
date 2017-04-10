@@ -10,19 +10,13 @@ const log = require('../lib/logger');
 
 const router = new express.Router();
 
-router.get('/entries', (req, res) => {
-  db.Entry.findAll({
-    include: db.User,
-  })
-  .then(response => res.send(response))
-  .catch((err) => {
-    log.error(err);
-    res.status(500).send(err);
-  });
-});
 
-router.get('/laststandup', (req, res) => {
+// fetch the team's last standup
+router.get('/teams/:teamId/laststandup', (req, res) => {
   db.Standup.findOne({
+    where: {
+      TeamId: req.params.teamId,
+    },
     include: [{
       model: db.Entry,
       include: db.User,
@@ -39,21 +33,13 @@ router.get('/laststandup', (req, res) => {
 });
 
 
-router.get('/entries', (req, res) => {
-  db.Entry.findAll({
-    include: db.User,
-  })
-  .then(response => res.send(response))
-  .catch((err) => {
-    log.error(err);
-    res.status(500).send(err);
-  });
-});
-
-// standuptitles
-// standups with no related data
-router.get('/standuptitles', (req, res) => {
+// a team's standups
+// don't include any other models
+router.get('/teams/:teamId/standuptitles', (req, res) => {
   db.Standup.findAll({
+    where: {
+      TeamId: req.params.teamId,
+    },
     order: [
       ['id', 'DESC'],
     ],
@@ -99,6 +85,7 @@ router.get('/standups/:id', (req, res) => {
 });
 
 
+// all users
 router.get('/users', (req, res) => {
   db.User.findAll()
   .then(response => res.send(response))
@@ -107,7 +94,7 @@ router.get('/users', (req, res) => {
   });
 });
 
-
+// create a user
 router.post('/users', (req, res) => {
   // todo - need more validation? relying on Sequelize here...
   db.User.create(req.body)
@@ -135,6 +122,7 @@ router.put('/users/:userId', (req, res) => {
   });
 });
 
+// delete a user
 router.delete('/users/:userId', (req, res) => {
   db.User.findById(req.params.userId)
   .then(userModel => userModel.destroy())
@@ -147,6 +135,7 @@ router.delete('/users/:userId', (req, res) => {
 
 
 // Create a new entry
+// todo - put this behind /teams/x/standups/y/ ?
 router.post('/entries', (req, res) => {
   // start by finding the most recent entry by this user
   db.Entry.findOne({
@@ -165,6 +154,9 @@ router.post('/entries', (req, res) => {
 
     return db.Entry.create(Object.assign({}, req.body, props));
   })
+  .then(data => db.Entry.findById(data.id, {
+    include: db.User,
+  }))
   .then(data => res.send(data))
   .catch((err) => {
     if (err.name === 'SequelizeValidationError') {
@@ -184,6 +176,7 @@ router.put('/entries/:entryId', (req, res) => {
   .then(entry => entry.updateAttributes(req.body))
   .then(data => res.send(data))
   .catch((err) => {
+    log.error(err);
     if (err.name === 'SequelizeValidationError') {
       res.status(400).send(err);
     } else {
@@ -206,8 +199,17 @@ router.delete('/entries/:entryId', (req, res) => {
 });
 
 
-router.post('/standups', (req, res) => {
-  db.Standup.create(req.body)
+// create a standup
+router.post('/teams/:teamId/standups', (req, res) => {
+  db.Standup.create({
+    TeamId: req.params.teamId,
+  })
+  .then(data => db.Standup.findById(data.id, {
+    include: [{
+      model: db.Entry,
+      include: db.User,
+    }],
+  }))
   .then(data => res.status(201).send(data))
   .catch((err) => {
     if (err.name === 'SequelizeValidationError') {
@@ -279,7 +281,7 @@ router.post('/teams', (req, res) => {
     log.error(err);
     if (err.name === 'SequelizeValidationError') {
       res.status(400).send(err);
-    } else {
+  } else {
       res.status(500).send(err);
     }
   });

@@ -52,8 +52,7 @@ class Checklist extends Component {
 function StandupMapStateToProps(state, ownProps){
 
     return {
-        standup: state.standups[state.activeStandup],
-        entries: state.standups[state.activeStandup].Entries || []
+        standup: state.activeStandup.data,
     }
 }
 

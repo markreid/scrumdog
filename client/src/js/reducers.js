@@ -8,113 +8,16 @@ import _ from 'lodash';
 
 import { teamsReducer, activeTeamReducer } from './ducks/teams';
 
-// todo - cleanup
+// todo - get rid of deprecated crap
 const defaultState = {
-  standups: {
-    null: {
-      syncState: {
-        fetching: false,
-        fetched: false,
-        failed: false,
-      },
-    },
-  },
   standupTitles: [],
-  entries: {},
   users: {},
-  activeStandup: null,
-  components: {},
+  activeStandup: null, // Standup with Entries with Users
+  activeTeam: null, // Team
   notes: {
     notes: 'loading notes...',
   },
 };
-
-
-// return an unique array
-function unique(arr) {
-  const set = new Set();
-  const uniqueArray = [];
-  arr.forEach(el => set.add(el));
-  set.forEach(el => uniqueArray.push(el));
-  return uniqueArray;
-}
-
-/**
- * Entries reducer
- * @param  {Array}  state
- * @param  {Object} action
- * @return {Array}
- */
-function entries(state = defaultState.entries, action) {
-  switch (action.type) {
-
-    case 'CHANGE_ENTRY_VALUE':
-      var freshState = Object.assign({}, state);
-      var updatedField = {};
-      updatedField[action.key] = action.value;
-      freshState[action.id] = Object.assign({}, freshState[action.id], updatedField);
-      return freshState;
-      break;
-
-    case 'REQUEST_SAVE_ENTRY_VALUE':
-      var freshState = Object.assign({}, state);
-      freshState[action.id] = attachSingleSyncState(freshState[action.id], {
-        fetching: true,
-        fetched: false,
-      });
-      return freshState;
-      break;
-
-    case 'RECEIVE_SAVE_ENTRY_VALUE':
-      var freshState = Object.assign({}, state);
-      freshState[action.id] = attachSingleSyncState(action.data);
-      return freshState;
-      break;
-
-    case 'FAIL_SAVE_ENTRY':
-      var freshState = Object.assign({}, state);
-      freshState[action.id] = attachSingleSyncState(freshState[action.id], {
-        fetched: false,
-        failed: true,
-      });
-      return freshState;
-      break;
-
-    case 'RECEIVE_LAST_STANDUP':
-      return attachSyncStates(action.data.entities.entries || {});
-      break;
-
-    case 'RECEIVE_STANDUP':
-      return attachSyncStates(action.data.entities.entries || {});
-      break;
-
-    case 'RECEIVE_ENTRY':
-      var freshState = Object.assign({}, state);
-      freshState[action.data.result] = attachSingleSyncState(action.data.entities.entries[action.data.result]);
-      return freshState;
-      break;
-
-    case 'REQUEST_REMOVE_ENTRY':
-      var freshState = Object.assign({}, state);
-      freshState[action.id] = attachSingleSyncState(freshState[action.id], {
-        fetching: true,
-        fetched: false,
-      });
-      return freshState;
-      break;
-
-        // case 'RECEIVE_REMOVE_ENTRY':
-        //     var freshState = Object.assign({}, state);
-        //     delete freshState[action.id];
-        //     return freshState;
-        //     break;
-
-
-    default:
-      return state;
-      break;
-  }
-}
 
 
 function users(state = defaultState.users, action) {
@@ -151,141 +54,92 @@ function users(state = defaultState.users, action) {
       var freshState = Object.assign({}, state);
       delete freshState[action.id];
       return freshState;
-      break;
 
     default:
       return state;
-      break;
   }
 }
 
 function activeStandup(state = defaultState.activeStandup, action) {
-  switch (action.type) {
-    case 'RECEIVE_LAST_STANDUP':
-      return action.data.result;
-      break;
-
-    case 'REQUEST_STANDUP_FAILED':
-      return null;
-      break;
-
-    case 'SET_ACTIVE_STANDUP':
-      return action.id;
-      break;
-
-    case 'RECEIVE_REMOVE_STANDUP':
-            // if you removed the active standup, reset to null
-      return action.id === state ? null : state;
-      break;
-
-    case 'RECEIVE_CREATE_STANDUP':
-            // created a new standup, set it as active
-      return action.data.result;
-      break;
-
-
-    default:
-      return state;
-      break;
-
-  }
-}
-
-function activeTeam(state = defaultState.activeTeam, action) {
-  return state;
-}
-
-function standups(state = defaultState.standups, action) {
-    // for now, we're only working with a single standup in the store
-    // at any point.  moving ahead we can investigate caching etc.
+  // any errors, no-op. errors reducer will catch them.
+  if (action.error) return state;
 
   switch (action.type) {
-
-    case 'RECEIVE_REMOVE_STANDUP':
-            // removed the standup, nuke it
-      return Object.assign({}, defaultState.standups);
-      break;
-
-        // request a single standup
-        // create an empty object with a 'fetching' sync state
-    case 'REQUEST_STANDUP':
-      return Object.assign({}, state, {
-        [action.id]: attachSingleSyncState({}, {
-          fetching: true,
-          fetched: false,
-        }),
-      });
-      break;
-
-    case 'REQUEST_LAST_STANDUP_FAILED':
-      return {
-        null: attachSingleSyncState({}, {
-          fetching: false,
-          fetched: false,
-          failed: true,
-          error: action.err,
-        }),
-      };
-      break;
-
-
-        // receiving a single standup.
-        // overwrite the standups object
     case 'RECEIVE_STANDUP':
-    case 'RECEIVE_LAST_STANDUP':
-    case 'RECEIVE_CREATE_STANDUP':
-      return {
-        [action.data.result]: attachSingleSyncState(action.data.entities.standups[action.data.result]),
-      };
+    case 'RECEIVE_CREATE_STANDUP': {
+      return action.data;
+    }
 
-      break;
+    case 'RECEIVE_REMOVE_STANDUP': {
+      // if you removed the active standup (probably),
+      // reset activestandup.
+      const { id } = action;
+      if (state.id === id) {
+        return defaultState.activeStandup;
+      }
+      return state;
+    }
 
+    case 'SET_ACTIVE_TEAM':
+    case 'RESET_ACTIVE_TEAM': {
+      // changing the team blows this away
+      return null;
+    }
 
-        // when receiving an entry, add/update on its parent standup
-    case 'RECEIVE_ENTRY':
-      const entryId = action.data.result;
-      const standupId = action.data.entities.entries[entryId].StandupId;
-      let standup = state[standupId];
+    case 'RECEIVE_ENTRY': {
+      const { data } = action;
+
+      // the entry doesn't belong on this standup, ignore it.
+      if (data.StandupId !== state.id) {
+        return state;
+      }
+
+      // entry does belong here, push it into Entries[]
       return Object.assign({}, state, {
-        [standupId]: Object.assign({}, standup, {
-          Entries: unique(standup.Entries.concat(entryId)),
-        }),
+        Entries: [...state.Entries, data],
       });
-      break;
+    }
 
-        // entry has been removed, needs to be pulled from the parent standup
-    case 'RECEIVE_REMOVE_ENTRY':
-      const freshState = Object.assign({}, state);
-      standup = freshState[action.standupId];
-      standup.Entries = _.without(standup.Entries, action.id);
-      return freshState;
-      break;
+    case 'RECEIVE_REMOVE_ENTRY': {
+      // filter the removed Entry out of Entries[]
+
+      const { id } = action;
+      return Object.assign({}, state, {
+        Entries: state.Entries.filter(entry => entry.id !== id),
+      });
+    }
 
     default:
       return state;
-      break;
   }
 }
 
 function standupTitles(state = defaultState.standupTitles, action) {
+  // errors are a no-op, picked up by the errors reducer
+  if (action.error) {
+    return state;
+  }
+
   switch (action.type) {
 
     case 'REQUEST_STANDUP_TITLES':
+      // reset
       return [];
 
     case 'RECEIVE_STANDUP_TITLES':
+      // replace
       return action.data;
 
     case 'RECEIVE_REMOVE_STANDUP':
+      // remove
       return state.filter(row => row.id !== action.id);
 
     case 'RECEIVE_CREATE_STANDUP':
-      const standup = action.data.entities.standups[action.data.result];
-      return [standup, ...state];
+      // add
+      return [action.data, ...state];
 
     default:
       return state;
-      break;
   }
 }
 
@@ -307,23 +161,17 @@ function notes(state = defaultState.notes, action) {
 }
 
 
-/**
- * Find an element in an array, return a mutated copy of it
- * inside a copy of the aray.
- * @param  {Array} arr          array to search
- * @param  {function} test      findIndex function
- * @param  {function} transform transform function
- * @return {Array}              copied array with modified element
- */
-function sliceAndReplace(arr, test, transform) {
-  const elementIndex = _.findIndex(arr, test);
-  const element = transform(arr[elementIndex]);
-  return [
-    ...arr.slice(0, elementIndex),
-    element,
-    ...arr.slice(elementIndex + 1),
-  ];
+// errors reducer.
+// for any action with an error,
+// push it into the errors array.
+function errors(state = [], action) {
+  if (action.error) {
+    return [...state, action.error];
+  }
+
+  return state;
 }
+
 
 /**
  * Attach syncStates to all keys on an object or
@@ -366,12 +214,11 @@ function attachSingleSyncState(target, syncStateOverwrite = {}) {
  * @type {Object}
  */
 export default combineReducers({
-  entries,
-  standups,
   users,
   standupTitles,
   activeStandup,
   notes,
+  errors,
   teams: teamsReducer,
   activeTeam: activeTeamReducer,
 });

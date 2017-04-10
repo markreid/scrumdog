@@ -4,79 +4,83 @@
  */
 
 
-import React from 'react';
-import {Component} from 'react';
-import {connect} from 'react-redux';
-import moment from 'moment';
+import React, { Component } from 'react';
+import autobind from 'autobind-decorator';
 
-import Loader from './loader.jsx'
+import Loader from './loader.jsx';
 import UserIcon from './user-icon.jsx';
 import EntryTextarea from './entry-textarea.jsx';
 
+import { removeEntry, saveEntry } from '../actions';
+import store from '../store';
 
-import {removeEntry, createEntry, changeEntryValue, saveEntry, fetchStandup, fetchUsers} from '../actions';
-
-
+@autobind
 class EntryComponent extends Component {
-    constructor (){
-        super();
-        this.save = this.save.bind(this);
-        this.remove = this.remove.bind(this);
-    }
 
-    render (){
-        return (
-            <div className="entry" onBlur={this.save}>
-                <div className="entry-column user">
-                    <UserIcon id={this.props.UserId} onClick={this.remove.bind(this)} />
-                </div>
-                <div className="entry-column text">
-                    <EntryTextarea onChange={this.changeHandler.bind(this, 'lastDayTasks')} value={this.props.lastDayTasks} />
-                </div>
-                <div className="entry-column text">
-                    <EntryTextarea onChange={this.changeHandler.bind(this, 'todayTasks')} value={this.props.todayTasks} />
-                </div>
-                <div className="entry-column text">
-                    <EntryTextarea onChange={this.changeHandler.bind(this, 'blockers')} value={this.props.blockers} />
-                </div>
-                <div className="entry-column state">
-                    {this.props.syncState.fetching &&
-                        <Loader size="tiny" />
-                    }
-                </div>
-            </div>
-        );
-    }
+  constructor(props) {
+    super();
+    const { lastDayTasks, todayTasks, blockers } = props.entry;
+    this.state = {
+      lastDayTasks,
+      todayTasks,
+      blockers,
+    };
+  }
 
-    changeHandler (key, evt){
-        this.props.dispatch(changeEntryValue({
-            id: this.props.id,
-            key: key,
-            value: evt.currentTarget.value
-        }));
-    }
+  componentWillReceiveProps(props) {
+    const { lastDayTasks, todayTasks, blockers } = props.entry;
 
-    toggleHandler (key, evt){
-        this.props.dispatch(changeEntryValue({
-            id: this.props.id,
-            key: key,
-            value: !!evt.currentTarget.checked
-        }));
-    }
+    this.setState({
+      lastDayTasks,
+      todayTasks,
+      blockers,
+    });
+  }
 
-    save(){
-        console.log('saving');
-        this.props.dispatch(saveEntry(this.props))
-    }
+  changeHandler(key, evt) {
+    this.setState({
+      [key]: evt.currentTarget.value,
+    });
+  }
 
-    remove(){
-        this.props.dispatch(removeEntry(this.props.id, this.props.standupId));
-    }
+  save() {
+    const payload = Object.assign({}, this.state, {
+      id: this.props.entry.id,
+    });
+    store.dispatch(saveEntry(payload));
+  }
 
+  remove() {
+    const { id, standupId } = this.props.entry;
+    store.dispatch(removeEntry(id, standupId));
+  }
+
+  render() {
+    const { lastDayTasks, todayTasks, blockers } = this.state;
+
+    return (
+      <div className="entry" onBlur={this.save}>
+        <div className="entry-column user">
+          <UserIcon {...this.props.entry.User} onClick={this.remove} />
+        </div>
+        <div className="entry-column text">
+          <EntryTextarea onChange={evt => this.changeHandler('lastDayTasks', evt)} value={lastDayTasks} />
+        </div>
+        <div className="entry-column text">
+          <EntryTextarea onChange={evt => this.changeHandler('todayTasks', evt)} value={todayTasks} />
+        </div>
+        <div className="entry-column text">
+          <EntryTextarea onChange={evt => this.changeHandler('blockers', evt)} value={blockers} />
+        </div>
+        <div className="entry-column state">
+          {this.props.syncState && this.props.syncState.fetching &&
+            <Loader size="tiny" />
+          }
+        </div>
+      </div>
+    );
+  }
 
 }
-export default connect(function(state, ownProps){
-    return state.entries[ownProps.id] || {};
-})(EntryComponent);
 
-
+export default EntryComponent;

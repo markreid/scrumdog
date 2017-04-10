@@ -24,7 +24,7 @@ class TeamListItem extends Component {
   }
 
   setActive() {
-    store.dispatch(setActiveTeam(this.props.id));
+    store.dispatch(setActiveTeam(this.props.id))
   }
 
   removeTeam() {

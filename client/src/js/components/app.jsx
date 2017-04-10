@@ -13,7 +13,6 @@ import store from '../store';
 
 import Standup from './standup.jsx';
 import StandupSummary from './standup-summary.jsx';
-import Checklist from './checklist.jsx';
 import Sidebar from './sidebar.jsx';
 import Header from './header.jsx';
 import Notes from './notes.jsx';
@@ -50,15 +49,16 @@ class App extends Component {
       'show-right': showSidebar === 2,
     });
 
-    const { activeTeam } = this.props;
+    const { activeTeam, activeStandup } = this.props;
 
+    // if you haven't selected a team, show that
     if (!activeTeam) {
       return <Teams />;
     }
 
     return (<div>
-      <div onClick={this.toggleLeftSidebar}>
-        <Header />
+      <div>
+        <Header onLogoClick={this.toggleLeftSidebar} />
       </div>
       <button onClick={this.toggleRightSidebar} style={{ float: 'right' }}>notes</button>
 
@@ -67,12 +67,15 @@ class App extends Component {
           <Sidebar />
         </div>
         <div className="content">
-          <Standup />
-          { false && <Checklist /> }
-          <StandupSummary />
+          { activeStandup &&
+            <div>
+              <Standup standup={activeStandup} />
+              <StandupSummary standup={activeStandup} />
+            </div>
+          }
         </div>
         <div className="sidebar sidebar-right">
-          <Notes />
+          { false && <Notes />}
         </div>
       </div>
     </div>);
@@ -80,10 +83,11 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
+  activeStandup: state.activeStandup,
   activeTeam: state.activeTeam,
 });
 
-const ConnectedApp = connect(mapStateToProps)(App)
+const ConnectedApp = connect(mapStateToProps)(App);
 
 // Wrap app in a Provider so redux parts get passed in to context
 const ProviderWrapper = () => (

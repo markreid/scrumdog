@@ -6,7 +6,8 @@
 
 import fetcher from '../lib/fetcher';
 import store from '../store';
-import { tapLog } from '../utils';
+// import { tapLog } from '../utils';
+
 
 function requestFetchTeams() {
   return {
@@ -14,8 +15,7 @@ function requestFetchTeams() {
   };
 }
 
-function receiveFetchTeams(payload) {
-  const { data, error } = payload;
+function receiveFetchTeams({ data, error }) {
   return {
     type: 'RECEIVE_FETCH_TEAMS',
     data,
@@ -29,8 +29,7 @@ function requestAddTeam() {
   };
 }
 
-function receiveAddTeam(payload) {
-  const { data, error } = payload;
+function receiveAddTeam({ data, error }) {
   return {
     type: 'RECEIVE_ADD_TEAM',
     data,
@@ -59,8 +58,7 @@ function requestAddUserToTeam(data) {
   };
 }
 
-function receiveAddUserToTeam(payload) {
-  const { data, error } = payload;
+function receiveAddUserToTeam({ data, error }) {
   return {
     type: 'RECEIVE_ADD_USER_TO_TEAM',
     data,
@@ -75,47 +73,11 @@ function requestRemoveUserFromTeam(data) {
   };
 }
 
-function receiveRemoveUserFromTeam(payload) {
-  const { data, error } = payload;
+function receiveRemoveUserFromTeam({ data, error }) {
   return {
     type: 'RECEIVE_REMOVE_USER_FROM_TEAM',
     data,
     error,
-  };
-}
-
-// fetch all teams
-export function fetchTeams() {
-  return (dispatch) => {
-    dispatch(requestFetchTeams());
-    return fetcher('/api/v1/teams')
-    .then(data => dispatch(receiveFetchTeams({ data })))
-    .catch(error => dispatch(receiveFetchTeams({ error })));
-  };
-}
-
-// add a team. requires .name
-export function addTeam(payload) {
-  return (dispatch) => {
-    dispatch(requestAddTeam());
-    return fetcher('/api/v1/teams', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    })
-    .then(data => dispatch(receiveAddTeam({ data })))
-    .catch(error => dispatch(receiveAddTeam({ error })));
-  };
-}
-
-// remove a team by id
-export function removeTeam(id) {
-  return (dispatch) => {
-    dispatch(requestRemoveTeam(id));
-    return fetcher(`/api/v1/teams/${id}`, {
-      method: 'DELETE',
-    })
-    .then(() => dispatch(receiveRemoveTeam(id)))
-    .catch(error => dispatch(receiveRemoveTeam({ error })));
   };
 }
 
@@ -134,10 +96,46 @@ export function resetActiveTeam() {
   });
 }
 
+
+// fetch all teams
+export function fetchTeams() {
+  return (dispatch) => {
+    dispatch(requestFetchTeams());
+    return fetcher('/api/v1/teams')
+    .then(data => dispatch(receiveFetchTeams({ data })))
+    .catch(error => dispatch(receiveFetchTeams({ error })));
+  };
+}
+
+// add a team. requires .name
+export function addTeam(props) {
+  return (dispatch) => {
+    dispatch(requestAddTeam());
+    return fetcher('/api/v1/teams', {
+      method: 'POST',
+      body: JSON.stringify(props),
+    })
+    .then(data => dispatch(receiveAddTeam({ data })))
+    .catch(error => dispatch(receiveAddTeam({ error })));
+  };
+}
+
+// remove a team by id
+export function removeTeam(id) {
+  return (dispatch) => {
+    dispatch(requestRemoveTeam(id));
+    return fetcher(`/api/v1/teams/${id}`, {
+      method: 'DELETE',
+    })
+    .then(() => dispatch(receiveRemoveTeam(id)))
+    .catch(error => dispatch(receiveRemoveTeam({ error })));
+  };
+}
+
 // add a user to the team.
 // requires teamId, userId
-export function addUserToTeam(data) {
-  const { userId, teamId } = data;
+export function addUserToTeam(props) {
+  const { userId, teamId } = props;
   return (dispatch) => {
     dispatch(requestAddUserToTeam({
       userId,
@@ -146,17 +144,15 @@ export function addUserToTeam(data) {
     return fetcher(`api/v1/teams/${teamId}/users/${userId}`, {
       method: 'PUT',
     })
-    .then(team => dispatch(receiveAddUserToTeam({
-      data: team,
-    })))
+    .then(data => dispatch(receiveAddUserToTeam({ data })))
     .catch(error => dispatch(receiveAddUserToTeam({ error })));
   };
 }
 
 // remove a user from a team.
 // requires teamId, userId
-export function removeUserFromTeam(data) {
-  const { userId, teamId } = data;
+export function removeUserFromTeam(props) {
+  const { userId, teamId } = props;
   return (dispatch) => {
     dispatch(requestRemoveUserFromTeam({
       userId,
@@ -165,19 +161,18 @@ export function removeUserFromTeam(data) {
     return fetcher(`/api/v1/teams/${teamId}/users/${userId}`, {
       method: 'DELETE',
     })
-    .then(team => dispatch(receiveRemoveUserFromTeam({
-      data: team,
-    })))
+    .then(data => dispatch(receiveRemoveUserFromTeam({ data })))
     .catch(error => dispatch(receiveRemoveUserFromTeam({ error })));
   };
 }
 
-const defaultState = {
+
+const DEFAULT_STATE = {
   data: [],
   error: null,
 };
 
-export const teamsReducer = (state = defaultState, action) => {
+export const teamsReducer = (state = DEFAULT_STATE, action) => {
   switch (action.type) {
 
     case 'RECEIVE_FETCH_TEAMS': {
@@ -231,7 +226,6 @@ export const teamsReducer = (state = defaultState, action) => {
     case 'RECEIVE_ADD_USER_TO_TEAM':
     case 'RECEIVE_REMOVE_USER_FROM_TEAM': {
       const { data, error } = action;
-      console.log(action);
       // api returns the team
       if (error) {
         return {
@@ -241,9 +235,7 @@ export const teamsReducer = (state = defaultState, action) => {
       }
 
       // replace it
-      const teams = state.data.map((team) => {
-        return team.id === data.id ? data : team;
-      });
+      const teams = state.data.map(team => (team.id === data.id ? data : team));
       return {
         data: teams,
         error: null,

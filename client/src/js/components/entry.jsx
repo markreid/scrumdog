@@ -27,16 +27,6 @@ class EntryComponent extends Component {
     };
   }
 
-  componentWillReceiveProps(props) {
-    const { lastDayTasks, todayTasks, blockers } = props.entry;
-
-    this.setState({
-      lastDayTasks,
-      todayTasks,
-      blockers,
-    });
-  }
-
   changeHandler(key, evt) {
     this.setState({
       [key]: evt.currentTarget.value,

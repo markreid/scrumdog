@@ -1,8 +1,12 @@
 # Roadmap
 
+## Features
+
+* Move Notes to Team
 
 ## Bugs, fixes, refactor
 
+* Fix team edit UI
 * Get everything linted
 * Refactor from actions.js and reducers.js to using ducks
 * Implement a uniform pattern for error handling (errors reducer and flash messages?)

@@ -336,6 +336,8 @@ body {
   font-weight: 600;
   border: none;
   outline: none;
+  cursor: pointer;
+  transition: background 0.2s linear;
 }
 
 .user-icon:hover {

@@ -50,30 +50,18 @@ function requestSaveEntry(id) {
   };
 }
 
-function failSaveEntry(id) {
-  return {
-    type: 'FAIL_SAVE_ENTRY',
-    id,
-  };
-}
-
 function requestLastStandup() {
   return {
     type: 'REQUEST_LAST_STANDUP',
   };
 }
 
-function receiveLastStandup(data) {
+
+function receiveLastStandup({ error, data }) {
   return {
     type: 'RECEIVE_LAST_STANDUP',
     data,
-  };
-}
-
-function requestLastStandupFailed(err) {
-  return {
-    type: 'REQUEST_LAST_STANDUP_FAILED',
-    err,
+    error,
   };
 }
 
@@ -341,23 +329,20 @@ export function removeEntry(entryId, standupId) {
 }
 
 
-// fetch standup data from the REST API
-// dispatches normalized standup, entries and users data
+// fetch the last standup for a given team
 export function fetchLastStandup(teamId) {
   return (dispatch) => {
     dispatch(requestLastStandup(teamId));
 
-    return fetch(`/api/v1/teams/${teamId}/laststandup`)
-    .then(response => response.json())
-    .then(json => normalize(json, normalizerSchemas.standup))
-    .then((normalized) => {
-      // if we got nothing...
-      if (!normalized.result) {
-        return dispatch(requestLastStandupFailed(404));
+    return fetcher(`/api/v1/teams/${teamId}/laststandup`)
+    .catch(error => dispatch(receiveStandup({ error })))
+    .then((data) => {
+      // last standup doesn't always exist
+      if (data && data.id) {
+        return dispatch(receiveStandup({ data }));
       }
-      return dispatch(receiveLastStandup(normalized));
-    })
-    .catch(err => console.error(err.stack));
+      return false;
+    });
   };
 }
 

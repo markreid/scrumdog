@@ -23,11 +23,6 @@ const defaultState = {
 function users(state = defaultState.users, action) {
   switch (action.type) {
 
-    case 'RECEIVE_LAST_STANDUP':
-            // merge
-      return Object.assign({}, state, attachSyncStates(action.data.entities.users || {}));
-      break;
-
     case 'RECEIVE_CREATE_USER':
     case 'RECEIVE_UPDATE_USER':
             // add

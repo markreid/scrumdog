@@ -167,19 +167,34 @@ a {
   font-weight: 200;
   font-size: 20px;
   border-bottom: 1px solid $skyblue;
-  padding: 0 0 8px;
+  padding: 0 0 4px;
   margin: 0 0 16px;
   color: $steelgrey;
+  display: flex;
+
+  .logo {
+    color: $midblue;
+    cursor: pointer;
+    font: inherit;
+    margin: 0 8px 0 0;
+    font-weight: 600;
+    flex: 0;
+  }
+
+  .standup-title {
+    font: inherit;
+    margin: 0;
+    flex: 1;
+  }
+
+  .team-name {
+    font: inherit;
+    margin: 0;
+    flex: 0 auto;
+    cursor: pointer;
+  }
 }
 
-#header b {
-  color: $midblue;
-  cursor: pointer;
-}
-
-#header span {
-  float: right;
-}
 
 body {
   padding: 20px;
@@ -431,11 +446,10 @@ body {
 
 .teams {
 
-  h2 {
+  h1 {
     color: $midblue;
     margin: 0 0 32px;
   }
-
 
   .teams-list {
     margin: 0 0 48px;

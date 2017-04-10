@@ -24,8 +24,17 @@ class Header extends Component {
       moment(activeStandup.date).format('dddd Do MMMM')
       : '';
     return (<header id="header">
-      <b onClick={this.props.onLogoClick}>Scrumdog</b> { title }
-      <span onClick={this.resetActiveTeam}>{ activeTeam.name }</span>
+      <h1
+        className="logo"
+        onClick={this.props.onLogoClick}
+      >Scrumdog</h1>
+      <h2
+        className="standup-title"
+      >{title}</h2>
+      <h2
+        className="team-name"
+        onClick={this.resetActiveTeam}
+      >{ activeTeam.name }</h2>
     </header>);
   }
 }

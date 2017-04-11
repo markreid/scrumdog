@@ -31,11 +31,11 @@ class Sidebar extends Component {
   }
 
   componentWillMount() {
-    this.props.dispatch(fetchStandupTitles());
+    this.props.dispatch(fetchStandupTitles(this.props.activeTeam.id));
   }
 
   createStandup() {
-    this.props.dispatch(createStandup());
+    this.props.dispatch(createStandup(this.props.activeTeam.id));
   }
 
   deleteActiveStandup() {
@@ -58,7 +58,6 @@ class Sidebar extends Component {
       <StandupListItem {...standup} key={key} />
     ));
 
-
     return (
       <div id="sidebar">
         <div className="actions">
@@ -77,5 +76,6 @@ class Sidebar extends Component {
 
 export default connect(state => ({
   standupTitles: state.standupTitles,
-  activeStandup: state.standups[state.activeStandup],
+  activeStandup: state.activeStandup,
+  activeTeam: state.activeTeam,
 }))(Sidebar);

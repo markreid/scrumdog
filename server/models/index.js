@@ -7,12 +7,17 @@ const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 
-const config = require(`${__dirname}/../config.json`);
+const config = require(`${__dirname}/../../db.json`);
+const logger = require('../lib/logger');
 
 const basename = path.basename(module.filename);
 
-const { database, username, password } = config.db;
-const sequelize = new Sequelize(database, username, password, config.db);
+const dbConfig = Object.assign({}, config, {
+  logging: logger.debug,
+});
+
+const { database, username, password } = config;
+const sequelize = new Sequelize(database, username, password, dbConfig);
 const db = {};
 
 fs
@@ -50,6 +55,9 @@ db.Team.belongsToMany(db.User, {
 });
 db.User.belongsToMany(db.Team, {
   through: db.TeamUser,
+});
+db.Standup.belongsTo(db.Team, {
+  onDelete: 'cascade', // delete standups on team deletion
 });
 
 

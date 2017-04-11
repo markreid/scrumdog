@@ -39,9 +39,9 @@ export default class EntryTextarea extends Component {
     const value = evt.currentTarget.value;
 
     // first character, prefix with a bullet.
-    if (value.length === 1 && value !== '•') {
+    if (value.length >= 1 && value[0] !== '•') {
       currentTarget.value = `• ${value}`;
-      caretPos = 3;
+      caretPos += 2;
     }
 
     // add a bullet after a newline

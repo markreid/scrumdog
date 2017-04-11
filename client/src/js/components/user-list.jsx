@@ -5,63 +5,63 @@
  * Click them to add them in.
  */
 
-import React from 'react';
-import {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import difference from 'lodash/difference';
+import autobind from 'autobind-decorator';
 
-import {removeUser, fetchUsers, createEntry} from '../actions';
+import { fetchTeamUsers, createEntry } from '../actions';
 
 import UserIcon from './user-icon.jsx';
 import NewUserIcon from './new-user-icon.jsx';
 
-
+@autobind
 class UserListComponent extends Component {
-    constructor(){
-        super();
 
-        // no auto binding in ES6 classes, boooo.
-        this.clickHandler = this.clickHandler.bind(this);
-        this.createEntry = this.createEntry.bind(this);
-    }
 
-    componentWillMount(){
-        this.props.dispatch(fetchUsers());
-    }
+  componentWillMount() {
+    this.props.dispatch(fetchTeamUsers(this.props.activeTeamId));
+  }
 
-    render () {
-        let users = this.props.users.map(user => <UserIcon key={user.id} id={user.id} onClick={this.clickHandler} />);
-        return (
-            <div className="user-list">
-                <header>
-                    <h4>Add someone to this standup</h4>
-                </header>
-                <div className="users">
-                    {users}
-                    <NewUserIcon />
-                </div>
-            </div>
-        );
-    }
+  createEntry(userId) {
+    return this.props.dispatch(createEntry(this.props.standup.id, userId));
+  }
 
-    clickHandler(userId){
-        return this.createEntry(userId);
-    }
+  render() {
+    const users = this.props.users.map(user => (
+      <UserIcon
+        key={user.id}
+        {...user}
+        onClick={this.createEntry}
+      />
+    ));
 
-    createEntry(userId){
-        this.props.dispatch(createEntry(this.props.standup.id, userId));
-    }
+    return (
+      <div className="user-list">
+        <header>
+          <h4>Add someone to this standup</h4>
+        </header>
+        <div className="users">
+          {users}
+          <NewUserIcon />
+        </div>
+      </div>
+    );
+  }
+
+
 }
 
-export default connect(function UserListMapStateToProps(state, ownProps){
-    // the users is a list of users that aren't currently in the standup
-    var standupEntries = ownProps.standup.Entries.map(id => state.entries[id]);
-    var standupUserIds = standupEntries.map(entry => entry.UserId);
-    var allUserIds = Object.keys(state.users).map(id => Number(id));
-    var notStandupUserIds = difference(allUserIds, standupUserIds);
+export default connect((state, ownProps) => {
+  // the users is a list of users that aren't currently in the standup
+  const standupEntries = ownProps.standup.Entries;
+  const standupUserIds = standupEntries.map(entry => entry.UserId);
+  const allUserIds = Object.keys(state.users).map(id => Number(id));
+  const notStandupUserIds = difference(allUserIds, standupUserIds);
 
-    return {
-        users: notStandupUserIds.map(id => state.users[id]),
-        standup: state.standups[state.activeStandup]
-    }
+  return {
+    users: notStandupUserIds.map(id => state.users[id]),
+    standup: ownProps.standup,
+    activeTeamId: state.activeTeam ? state.activeTeam.id : null,
+  };
 })(UserListComponent);

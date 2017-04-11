@@ -3,20 +3,17 @@
  * Redux store implementation
  */
 
-import {createStore, applyMiddleware} from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import loggerMiddleware from 'redux-logger';
+// import loggerMiddleware from 'redux-logger';
 
-import {rootReducer} from './reducers';
+import rootReducer from './reducers';
 
+// eslint-disable-next-line no-underscore-dangle
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const createStoreWithMiddleware = applyMiddleware(
-    thunkMiddleware
-    // loggerMiddleware
-)(createStore);
+const store = createStore(rootReducer, composeEnhancers(
+  applyMiddleware(thunkMiddleware)
+));
 
-function configureStore(initialState){
-    return createStoreWithMiddleware(rootReducer, initialState);
-}
-
-export default configureStore();
+export default store;

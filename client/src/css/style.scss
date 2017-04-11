@@ -1,13 +1,9 @@
-/**
+$navy: #14607F;
+$skyblue: #74D6FF;
+$steelgrey: #3A6B7F;
+$midblue: #1F99CC;
+$lightblue: #27BFFF;
 
-#14607F
-#74D6FF
-#27BFFF
-#3A6B7F
-#1F99CC
-
-
- **/
 
 body {
   margin: 0;
@@ -19,43 +15,48 @@ body {
 }
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+a {
+  cursor: pointer;
 }
 
 .user-list {
-    margin-top: 60px;
+  margin-top: 60px;
 }
 
 .btn {
-    border: none;
-    background-color: #74D6FF;
-    color: white;
-    border-radius: 4px;
-    font-size: inherit;
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: background 0.1s ease-in-out;
-    margin: 0 4px;
-    outline: none;
+  border: none;
+  background-color: $skyblue;
+  color: white;
+  border-radius: 4px;
+  font-size: inherit;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.1s ease-in-out;
+  margin: 0 4px;
+  outline: none;
 }
 
 .btn.alt {
-    background: #1F99CC;
+  background: $midblue;
 }
 
 .btn.alt:hover, .btn.alt:focus {
-    background: #3A6B7F;
+  background: $steelgrey;
 }
 
 .btn:hover, .btn:focus {
-    background-color: #27BFFF;
+  background-color: $lightblue;
 }
 
-.btn.alt {
-
+.input {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: inherit;
+  border: 1px solid #ddd;
 }
-
-
 
 .sidebar-wrapper {
   display: flex;
@@ -94,7 +95,7 @@ body {
 
 #sidebar .actions button {
   border: none;
-  background: #74D6FF;
+  background: $skyblue;
   color: white;
   padding: 8px 16px;
   border-radius: 8px;
@@ -103,7 +104,7 @@ body {
 }
 
 #sidebar .actions button:hover, #sidebar .actions button:active {
-  background: #27BFFF;
+  background: $lightblue;
 }
 
 #sidebar .actions button + button {
@@ -112,7 +113,7 @@ body {
 
 #sidebar .standup-list {
   list-style-type: none;
-  margin: 0;
+  margin: 0 0 16px;
   padding: 0;
 }
 
@@ -154,7 +155,7 @@ body {
 #logo {
   font-weight: 200;
   text-align: right;
-  color: #74D6FF;
+  color: $skyblue;
   margin: 0;
   position: absolute;
   top: 4px;
@@ -165,16 +166,35 @@ body {
 #header {
   font-weight: 200;
   font-size: 20px;
-  border-bottom: 1px solid #74D6FF;
-  padding: 0 0 8px;
+  border-bottom: 1px solid $skyblue;
+  padding: 0 0 4px;
   margin: 0 0 16px;
-  color: #3A6B7F;
-  cursor: pointer;
+  color: $steelgrey;
+  display: flex;
+
+  .logo {
+    color: $midblue;
+    cursor: pointer;
+    font: inherit;
+    margin: 0 8px 0 0;
+    font-weight: 600;
+    flex: 0;
+  }
+
+  .standup-title {
+    font: inherit;
+    margin: 0;
+    flex: 1;
+  }
+
+  .team-name {
+    font: inherit;
+    margin: 0;
+    flex: 0 auto;
+    cursor: pointer;
+  }
 }
 
-#header b {
-  color: #1F99CC;
-}
 
 body {
   padding: 20px;
@@ -185,7 +205,7 @@ body {
 .standup-list h2.active-standup {
   text-align: center;
   text-decoration: underline;
-  color: #14607F;
+  color: $navy;
   font-weight: 400;
   margin: 0;
   cursor: pointer;
@@ -193,14 +213,14 @@ body {
 
 .standup-list-items .standup-list-item{
   text-align: center;
-  color: #14607f;
+  color: $navy;
   line-height: 1.6em;
   cursor: pointer;
   font-size: 1.5rem;
 }
 
 .standup-list-item:hover {
-    background-color: #fafaff;
+  background-color: #fafaff;
 }
 
 .standup-list .standup-list-items {
@@ -245,22 +265,22 @@ body {
 
 
 .entry .entry-column {
-    height: 100%;
+  height: 100%;
 }
 
 .entry.header .entry-column{
   height: auto;
   text-transform: uppercase;
-  color: #1F99CC;
+  color: $midblue;
   padding-left: 8px;
   font-size: 17px;
 }
 
 .entry .entry-column.user {
-    justify-content: center;
-    align-self: center;
-    display: flex;
-    height: 100%;
+  justify-content: center;
+  align-self: center;
+  display: flex;
+  height: 100%;
 }
 
 .entry .entry-column.text,  {
@@ -273,11 +293,11 @@ body {
 }
 
 .btn-entry-remove {
-    background: none;
-    opacity: 0;
-    border: none;
-    font-size: 1.6rem;
-    transition: opacity 0.25s ease-in-out;
+  background: none;
+  opacity: 0;
+  border: none;
+  font-size: 1.6rem;
+  transition: opacity 0.25s ease-in-out;
 }
 
 .entry-column textarea, #notes textarea {
@@ -287,14 +307,14 @@ body {
   height: 100%;
   padding: 8px;
   font: inherit;
-  color: #14607F;
+  color: $navy;
   font-size: 1.8rem;
   font-weight: 200;
   line-height: 1.5em;
 }
 
 .entry-column textarea:empty {
-    border: 1px dashed #ddd;
+  border: 1px dashed #ddd;
 }
 
 .entry-column textarea:focus {
@@ -308,31 +328,35 @@ body {
   width: 60px;
   height: 60px;
   border-radius: 30px;
-  background: #74D6FF;
+  background: $skyblue;
   color: white;
   line-height: 60px;
   text-align: center;
   font-size: 1.8rem;
-  font-weight: 800;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.2s linear;
 }
 
 .user-icon:hover {
-  background: #3A6B7F;
+  background: $steelgrey;
 }
 
 
-/*.entries .entry:nth-child(5n+1) .user-icon { background: #14607F; }
-.entries .entry:nth-child(5n+2) .user-icon { background: #74D6FF; }
-.entries .entry:nth-child(5n+3) .user-icon { background: #27BFFF; }
-.entries .entry:nth-child(5n+4) .user-icon { background: #3A6B7F; }
-.entries .entry:nth-child(5n+5) .user-icon { background: #1F99CC; }
+/*.entries .entry:nth-child(5n+1) .user-icon { background: $navy; }
+.entries .entry:nth-child(5n+2) .user-icon { background: $skyblue; }
+.entries .entry:nth-child(5n+3) .user-icon { background: $lightblue; }
+.entries .entry:nth-child(5n+4) .user-icon { background: $steelgrey; }
+.entries .entry:nth-child(5n+5) .user-icon { background: $midblue; }
 */
 .user-icon.add-user {
   background: #ccc;
 }
 
 .user-list .users{
-   display: flex;
+ display: flex;
 }
 
 .user-list .users .user-icon {
@@ -362,36 +386,36 @@ body {
 }
 
 .user-add-form input:first-child {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 
 .entry-wrapper {
-    display: flex;
-    width: 100%;
-    line-height: 2em;
+  display: flex;
+  width: 100%;
+  line-height: 2em;
 }
 
 .entry-wrapper .entry-column {
-    flex: 1;
-    margin: 0 16px;
+  flex: 1;
+  margin: 0 16px;
 }
 
 .entry-wrapper .entry-column textarea {
-    border: 1px solid skyblue;
-    border-radius: 3px;
-    width: 100%;
+  border: 1px solid skyblue;
+  border-radius: 3px;
+  width: 100%;
 }
 
 .entry-column.entry-name {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 
 .entry-wrapper.header {
-    color: skyblue;
-    font-weight: 600;
-    margin-bottom: 1em;
+  color: skyblue;
+  font-weight: 600;
+  margin-bottom: 1em;
 }
 
 .entry-wrapper.header .entry-column {
@@ -399,34 +423,95 @@ body {
 }
 
 #notes textarea {
-    display: block;
-    border: 1px solid #ddd;
-    border-radius: 2px;
-    padding: 8px;
-    width: 100%;
-    margin: 24px 0;
-    resize: none;
+  display: block;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  padding: 8px;
+  width: 100%;
+  margin: 24px 0;
+  resize: none;
 }
 
 #notes button {
-    border: 1px solid #ccc;
-    background: #eee;
-    border-radius: 2px;
+  border: 1px solid #ccc;
+  background: #eee;
+  border-radius: 2px;
 }
 
 #notes button.dirty {
-    background: #fdd;
+  background: #fdd;
 }
 
 
+
+/* teams */
+
+.teams {
+
+  h1 {
+    color: $midblue;
+    margin: 0 0 32px;
+  }
+
+  .teams-list {
+    margin: 0 0 48px;
+  }
+
+  .btn-show-add {
+    color: $midblue;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+  }
+
+  .form-add-team {
+    margin: 16px 0;
+  }
+}
+
+.team-list-item {
+  border-bottom: 1px solid #ddd;
+  margin: 0 0 16px;
+
+  header {
+    display: flex;
+    align-items: center;
+  }
+
+  .team-list-item__name {
+    color: $steelgrey;
+    font-size: 20px;
+    width: 100%;
+    padding: 0 0 8px;
+
+    &:hover {
+      color: $midblue;
+    }
+  }
+
+  .btn-edit {
+    flex: 0;
+    padding: 12px;
+    &:hover {
+      color: #333;
+    }
+  }
+
+}
+
+.team-list-item__detail {
+  margin: 16px;
+}
 
 .loader-wrapper {
-    height: 100px;
-    margin-top: 80px;
+  height: 100px;
+  margin-top: 80px;
 }
 .loader-wrapper.tiny {
-    height: 15px;
-    margin: 0;
+  height: 15px;
+  margin: 0;
 }
 .loader,
 .loader:before,
@@ -460,11 +545,11 @@ body {
   animation-delay: -0.16s;
 }
 .loader-wrapper.tiny .loader {
-    font-size: 3px;
+  font-size: 3px;
 }
 
 .user-add-form .loader-wrapper {
-    margin-left: 14px;
+  margin-left: 14px;
 }
 .loader:after {
   left: 1.5em;

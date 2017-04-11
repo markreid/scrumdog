@@ -2,11 +2,10 @@
  * Standup List Item component
  */
 
-import React from 'react';
-import { Component } from 'react';
-import store from '../store';
+import React, { Component } from 'react';
 import moment from 'moment';
 
+import store from '../store';
 import { setActiveStandup } from '../actions';
 
 export default class StandupListItem extends Component {
@@ -17,9 +16,7 @@ export default class StandupListItem extends Component {
     }
 
     render () {
-
         const cleanDate = moment(this.props.date).format('dddd D MMM');
-
         return (
             <li onClick={ this.setAsActive }>
                 { cleanDate }

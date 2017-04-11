@@ -2,11 +2,14 @@
 
 ## Features
 
-* Move Notes to Team
+* User management
+  * Add, edit, delete users in a separate context to team/standup
+* Reimplement Notes as a text field on Team
 
 ## Bugs, fixes, refactor
 
-* Fix team edit UI
+* Copy-paste summary is broken, doesn't update reactively
+* Fix team edit UI, it's hideous
 * Get everything linted
 * Refactor from actions.js and reducers.js to using ducks
 * Implement a uniform pattern for error handling (errors reducer and flash messages?)
@@ -16,7 +19,5 @@
 
 ## Teams bugs, refactors
 
-* Add user to standup -> create user, add to team
-  * or just deprecate this and have a users page somewhere
 * Ensure lastDay entry loads from the same team only
 * Deleting the last standup in a team throws an error (sometimes?)

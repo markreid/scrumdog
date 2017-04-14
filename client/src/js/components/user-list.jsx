@@ -18,7 +18,11 @@ import UserIcon from './user-icon.jsx';
 class UserListComponent extends Component {
 
   createEntry(userId) {
-    return this.props.dispatch(createEntry(this.props.standup.id, userId));
+    return this.props.dispatch(createEntry({
+      teamId: this.props.team.id,
+      standupId: this.props.standup.id,
+      userId,
+    }));
   }
 
   render() {

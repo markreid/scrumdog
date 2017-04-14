@@ -4,51 +4,11 @@
  */
 
 
-import React, { Component } from 'react';
+import React from 'react';
+import autobind from 'autobind-decorator';
 
-import Loader from './loader.jsx';
-
-
-class StandupSummary extends Component {
-
-  static renderFetching() {
-    return (
-      <div id="standup">
-        <Loader />
-      </div>
-    );
-  }
-
-  static copy() {
-    const range = document.createRange();
-    range.selectNode(document.querySelector('.standup-summary-view pre'));
-    window.getSelection().addRange(range);
-    document.execCommand('copy');
-    window.getSelection().removeAllRanges();
-  }
-
-  render() {
-    if (!this.props.standup) return '';
-
-    const entries = this.props.standup.Entries.map(entry => generateEntryString(entry));
-    const entriesString = entries.join('');
-
-    return (
-      <div id="standup-summary">
-        <div className="standup-summary-view">
-          <h4>Copy-Pasta summary</h4>
-          <button onClick={this.copy}>copy</button>
-          <pre>{entriesString}</pre>
-        </div>
-      </div>
-    );
-  }
-
-}
 
 function generateEntryString(entry) {
-  // this is probably not the right way to do this...
-
   const user = entry.User || null;
 
   if (!entry || !user) {
@@ -71,8 +31,47 @@ function generateEntryString(entry) {
 
   // tidy it up a bit
   const cleanString = str.replace(/\n */gm, '\n').replace(/•/gm, '*');
-
   return cleanString;
+}
+
+
+@autobind
+class StandupSummary extends React.Component {
+
+  copy() {
+    // unhide the text summary, copy it, hide it again.
+    const range = document.createRange();
+    range.selectNode(this.entriesPre);
+    this.entriesPre.style.display = 'block';
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    this.entriesPre.style.display = 'none';
+  }
+
+  render() {
+    if (!this.props.standup) return '';
+
+    const entries = this.props.standup.Entries.map(entry => generateEntryString(entry));
+    const entriesString = entries.join('');
+
+    return (
+      <div id="standup-summary">
+        <div className="standup-summary-view">
+          <button
+            className="btn"
+            onClick={this.copy}
+          >Copy text summary</button>
+          <pre
+            ref={(pre) => { this.entriesPre = pre; }}
+            style={{ display: 'none' }}
+          >{entriesString}</pre>
+        </div>
+      </div>
+    );
+  }
+
 }
 
 export default StandupSummary;

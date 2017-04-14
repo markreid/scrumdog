@@ -60,7 +60,7 @@ class StandupSummary extends React.Component {
       <div id="standup-summary">
         <div className="standup-summary-view">
           <button
-            className="btn"
+            className="btn alt"
             onClick={this.copy}
           >Copy text summary</button>
           <pre

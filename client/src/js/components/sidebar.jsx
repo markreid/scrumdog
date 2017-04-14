@@ -5,6 +5,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import autobind from 'autobind-decorator';
+import { Link } from 'react-router-dom';
 
 import StandupListItem from './standup-list-item.jsx';
 import { createStandup, fetchStandupTitles, removeStandup } from '../actions';
@@ -68,7 +69,14 @@ class Sidebar extends Component {
         <ul className="standup-list">
           { standupItems }
         </ul>
-        <button onClick={this.toggleShowAll}>{ showAll ? `Show ${NUM_VISIBLE_STANDUPS}` : 'Show All' }</button>
+        <button
+          className="standup-list__btn-show-all"
+          onClick={this.toggleShowAll}
+        >{ showAll ? `Show ${NUM_VISIBLE_STANDUPS}` : 'Show All' }</button>
+
+        <div className="links">
+          <Link to="/users">Manage Users &raquo;</Link>
+        </div>
       </div>
     );
   }

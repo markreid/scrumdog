@@ -64,48 +64,55 @@ class TeamListItem extends Component {
     const { name } = this.props;
     const { showDetail, confirmRemove } = this.state;
 
-    return (<div className="team-list-item">
-      <header>
+    return (<div className="list-table__list__item">
+      <header className="list-table__list__item__header">
         <a
           onClick={this.setActive}
-          className="team-list-item__name"
+          className="list-table__list__item__title"
         >{name}</a>
         <small>
           <a
             onClick={this.toggleShow}
-            className="btn-edit"
+            className="list-table__list__item__btn-edit"
           >edit</a>
         </small>
       </header>
 
-      {showDetail && (<div className="team-list-item__detail">
-        <div className="team-edit">
-          <h2>Edit Team</h2>
-          <form onSubmit={this.editSubmitHandler}>
-            <input
-              type="text"
-              className="input"
-              value={this.state.teamName}
-              onChange={this.nameChangeHandler}
-            />
-            <button className="btn">Save</button>
-          </form>
-        </div>
+      {showDetail && (
+        <div className="team-list-item__detail">
+          <div className="team-edit edit-section">
+            <h2 className="edit-section__title">Edit Team</h2>
+            <section className="edit-section__content">
+              <form onSubmit={this.editSubmitHandler}>
+                <input
+                  type="text"
+                  className="input"
+                  value={this.state.teamName}
+                  onChange={this.nameChangeHandler}
+                />
+                <button className="btn">Save</button>
+              </form>
+            </section>
+          </div>
 
-        <div className="team-users">
-          <h2>Users</h2>
-          <TeamUsers {...this.props} />
-        </div>
+          <div className="team-users edit-section">
+            <h2 className="edit-section__title">Users</h2>
+            <section className="edit-section__content">
+              <TeamUsers {...this.props} />
+            </section>
+          </div>
 
-        <div className="team-remove">
-          <h2>Remove Team</h2>
-          <button onClick={this.toggleConfirmRemove} className="btn">Remove team</button>
-          {confirmRemove && (
-            <button onClick={this.removeTeam} className="btn alt">I am serious.</button>
-          )}
+          <div className="team-remove edit-section">
+            <h2 className="edit-section__title">Remove Team</h2>
+            <section className="edit-section__content">
+              <button onClick={this.toggleConfirmRemove} className="btn">Remove team</button>
+              {confirmRemove && (
+                <button onClick={this.removeTeam} className="btn alt">I am serious.</button>
+              )}
+            </section>
+          </div>
         </div>
-
-      </div>)}
+      )}
 
     </div>);
   }

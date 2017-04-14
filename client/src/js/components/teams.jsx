@@ -56,31 +56,35 @@ class Teams extends Component {
     const { showAdd } = this.state;
 
     return (<div className="teams">
-      <h1>Select a Team</h1>
+      <div className="list-table">
+        <header className="list-table__header">
+          <h1 className="list-table__header__title">Select a Team</h1>
+        </header>
 
-      <div className="teams-list">
-        {teams.map(team => <TeamListItem key={team.id} {...team} />)}
+        <div className="list-table__list">
+          {teams.map(team => <TeamListItem key={team.id} {...team} />)}
+        </div>
+
+        <a
+          onClick={this.toggleShowAdd}
+          className="list-table__btn-add"
+        >Add a team...</a>
+
+        {showAdd && (
+          <form
+            onSubmit={this.addTeam}
+            className="list-table__form-add"
+          >
+            <input
+              className="input"
+              onChange={this.setTeamName}
+              value={this.state.teamName}
+              placeholder="Team Name"
+            />
+            <button type="submit" className="btn alt">Add Team</button>
+          </form>
+        )}
       </div>
-
-      <a
-        onClick={this.toggleShowAdd}
-        className="btn-show-add"
-      >Add a team...</a>
-
-      {showAdd && (
-        <form
-          onSubmit={this.addTeam}
-          className="form-add-team"
-        >
-          <input
-            className="input"
-            onChange={this.setTeamName}
-            value={this.state.teamName}
-            placeholder="Team Name"
-          />
-          <button type="submit" className="btn alt">Add Team</button>
-        </form>
-      )}
 
     </div>);
   }

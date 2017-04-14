@@ -19,7 +19,13 @@ class UserIconComponent extends Component {
       (names[0][0] + names[names.length - 1][0]) :
       names[0][0] + names[0][names[0].length - 1];
 
-    return <button className="user-icon" onClick={this.clickHandler}>{initials.toUpperCase()}</button>;
+    return (
+      <button
+        className="user-icon"
+        onClick={this.clickHandler}
+        title={this.props.fullName}
+      >{initials.toUpperCase()}</button>
+    );
   }
 }
 

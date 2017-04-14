@@ -4,45 +4,41 @@
  */
 
 
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import Entry from './entry.jsx';
 import UserList from './user-list.jsx';
 
-class Standup extends Component {
+const Standup = (props) => {
+  const entries = (props.standup.Entries || []).map(entry => (
+    <Entry
+      key={entry.id}
+      entry={entry}
+      standupId={props.standup.id}
+    />
+  ));
 
-  render() {
-    const entries = (this.props.standup.Entries || []).map(entry => (
-      <Entry
-        key={entry.id}
-        entry={entry}
-        standupId={this.props.standup.id}
-      />
-    ));
-
-    return (
-      <div id="standup">
-        <div className="standup-view">
-          <div className="entries">
-            <div className="entry header">
-              <div className="entry-column user" />
-              <div className="entry-column text">Yesterday</div>
-              <div className="entry-column text">Today</div>
-              <div className="entry-column text">Blocked by</div>
-              <div className="entry-column state" />
-            </div>
-            {entries}
+  return (
+    <div id="standup">
+      <div className="standup-view">
+        <div className="entries">
+          <div className="entry header">
+            <div className="entry-column user" />
+            <div className="entry-column text">Yesterday</div>
+            <div className="entry-column text">Today</div>
+            <div className="entry-column text">Blocked by</div>
+            <div className="entry-column state" />
           </div>
-
-          <UserList standup={this.props.standup} />
+          {entries}
         </div>
 
+        <UserList standup={props.standup} team={props.activeTeam} />
       </div>
-    );
-  }
 
-}
+    </div>
+  );
+};
 
 
 /**
@@ -50,6 +46,7 @@ class Standup extends Component {
  */
 function StandupMapStateToProps(state) {
   return {
+    activeTeam: state.activeTeam || null,
     activeTeamId: state.activeTeam ? state.activeTeam.id : null,
   };
 }

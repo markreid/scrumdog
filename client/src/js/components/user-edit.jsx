@@ -1,16 +1,18 @@
 /**
- * user-profile.jsx
- * Form for editing a user's profile
+ * UserEdit
+ * Edit a User's details
  */
 
 import React from 'react';
+import autobind from 'autobind-decorator';
 
+import store from '../store';
+import { updateUser } from '../actions';
 
-export default class UserProfileComponent extends React.Component {
+@autobind
+export default class UserEdit extends React.Component {
 
   componentWillMount() {
-    // props to state.
-    // technically this is an antipattern but yoloooooooo
     const { fullName, email, nickname } = this.props;
     this.setState({
       fullName,
@@ -19,33 +21,62 @@ export default class UserProfileComponent extends React.Component {
     });
   }
 
-  setValue(key, evt) {
-    return this.setState({
-      [key]: evt.currentTarget.value,
+  setValue(evt) {
+    this.setState({
+      [evt.currentTarget.name]: evt.currentTarget.value,
     });
   }
 
+  submitHandler(evt) {
+    evt.preventDefault();
+    const { fullName, email, nickname } = this.state;
+    const { id } = this.props;
+    store.dispatch(updateUser({
+      id,
+      fullName,
+      email,
+      nickname,
+    }));
+  }
+
   render() {
-    const { onSave, onCancel, userId } = this.props;
     const { fullName, email, nickname } = this.state;
 
     return (
-      <div className="user-add-form">
-        <input type="text" placeholder="full name" value={fullName} onChange={this.setValue.bind(this,'fullName')} />
-        <input type="email" placeholder="email" value={email} onChange={this.setValue.bind(this,'email')} />
-        <input type="text" placeholder="nickname" value={nickname} onChange={this.setValue.bind(this,'nickname')} />
+      <div className="inline-form">
+        <form onSubmit={this.submitHandler}>
+          <input
+            className="input"
+            type="text"
+            placeholder="full name"
+            value={fullName}
+            name="fullName"
+            onChange={this.setValue}
+          />
+          <input
+            className="input"
+            type="email"
+            placeholder="email"
+            value={email}
+            name="email"
+            onChange={this.setValue}
+          />
+          <input
+            className="input"
+            type="text"
+            placeholder="nickname"
+            value={nickname}
+            name="nickname"
+            onChange={this.setValue}
+          />
 
-        <button className="btn" onClick={onSave.bind(null, this.state)}>Go</button>
-        <button className="btn alt" onClick={onCancel}>Cancel</button>
-
-        { userId && <button className="btn">Delete</button> }
+          <button
+            type="submit"
+            className="btn"
+          >Save</button>
+        </form>
       </div>
     );
   }
 
-};
-
-UserProfileComponent.PropTypes = {
-  onSave: React.PropTypes.func,
-  onCancel: React.PropTypes.func,
 }

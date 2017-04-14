@@ -8,6 +8,11 @@ import React, { Component } from 'react';
 import autobind from 'autobind-decorator';
 import classnames from 'classnames';
 import { Provider, connect } from 'react-redux';
+import {
+  BrowserRouter,
+  Route,
+  Redirect
+} from 'react-router-dom';
 
 import store from '../store';
 
@@ -17,6 +22,7 @@ import Sidebar from './sidebar.jsx';
 import Header from './header.jsx';
 import Notes from './notes.jsx';
 import Teams from './teams.jsx';
+import UserTable from './user-table';
 
 
 @autobind
@@ -51,34 +57,35 @@ class App extends Component {
 
     const { activeTeam, activeStandup } = this.props;
 
-    // if you haven't selected a team, show that
+    // // if you haven't selected a team, do that first.
     if (!activeTeam) {
       return <Teams />;
     }
 
-    return (<div>
+    return (
       <div>
-        <Header onLogoClick={this.toggleLeftSidebar} />
-      </div>
-      <button onClick={this.toggleRightSidebar} style={{ float: 'right' }}>notes</button>
+        <div>
+          <Header onLogoClick={this.toggleLeftSidebar} />
+        </div>
 
-      <div className={wrapperClassName}>
-        <div className="sidebar sidebar-left">
-          <Sidebar />
-        </div>
-        <div className="content">
-          { activeStandup &&
-            <div>
-              <Standup standup={activeStandup} />
-              <StandupSummary standup={activeStandup} />
-            </div>
-          }
-        </div>
-        <div className="sidebar sidebar-right">
-          { false && <Notes />}
+        <div className={wrapperClassName}>
+          <div className="sidebar sidebar-left">
+            <Sidebar />
+          </div>
+          <div className="content">
+            {activeStandup &&
+              <div>
+                <Standup standup={activeStandup} />
+                <StandupSummary standup={activeStandup} />
+              </div>
+            }
+          </div>
+          <div className="sidebar sidebar-right">
+            { false && <Notes />}
+          </div>
         </div>
       </div>
-    </div>);
+    );
   }
 }
 
@@ -86,13 +93,21 @@ const mapStateToProps = state => ({
   activeStandup: state.activeStandup,
   activeTeam: state.activeTeam,
 });
-
 const ConnectedApp = connect(mapStateToProps)(App);
+
+
+// basic router. right now it's only users or "everything else"
+const Router = () => (<div>
+  <Route path="/" component={ConnectedApp} exact />
+  <Route path="/users" component={UserTable} />
+</div>);
 
 // Wrap app in a Provider so redux parts get passed in to context
 const ProviderWrapper = () => (
   <Provider store={store}>
-    <ConnectedApp />
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
   </Provider>
 );
 

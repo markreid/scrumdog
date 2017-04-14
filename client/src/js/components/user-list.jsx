@@ -7,21 +7,15 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import difference from 'lodash/difference';
 import autobind from 'autobind-decorator';
+import { Link } from 'react-router-dom';
 
-import { fetchTeamUsers, createEntry } from '../actions';
+import { createEntry } from '../actions';
 
 import UserIcon from './user-icon.jsx';
-import NewUserIcon from './new-user-icon.jsx';
 
 @autobind
 class UserListComponent extends Component {
-
-
-  componentWillMount() {
-    this.props.dispatch(fetchTeamUsers(this.props.activeTeamId));
-  }
 
   createEntry(userId) {
     return this.props.dispatch(createEntry(this.props.standup.id, userId));
@@ -39,12 +33,12 @@ class UserListComponent extends Component {
     return (
       <div className="user-list">
         <header>
-          <h4>Add someone to this standup</h4>
+          <h3>Add someone to this standup:</h3>
         </header>
         <div className="users">
           {users}
-          <NewUserIcon />
         </div>
+        <Link to="/users" className="link-manage-users">Manage users &raquo;</Link>
       </div>
     );
   }
@@ -53,14 +47,14 @@ class UserListComponent extends Component {
 }
 
 export default connect((state, ownProps) => {
-  // the users is a list of users that aren't currently in the standup
+  // we show team users that don't have an entry in the standup
   const standupEntries = ownProps.standup.Entries;
   const standupUserIds = standupEntries.map(entry => entry.UserId);
-  const allUserIds = Object.keys(state.users).map(id => Number(id));
-  const notStandupUserIds = difference(allUserIds, standupUserIds);
+  const teamUsers = ownProps.team.Users;
+  const users = teamUsers.filter(user => !standupUserIds.includes(user.id));
 
   return {
-    users: notStandupUserIds.map(id => state.users[id]),
+    users,
     standup: ownProps.standup,
     activeTeamId: state.activeTeam ? state.activeTeam.id : null,
   };

@@ -398,12 +398,10 @@ export function createUser(props) {
   return (dispatch) => {
     dispatch(requestCreateUser());
 
-    return fetch('/api/v1/users', {
+    return fetcher('/api/v1/users', {
       method: 'POST',
       body: JSON.stringify(props),
-      headers: ajaxHeaders,
     })
-    .then(response => response.json())
     .then(json => normalize(json, normalizerSchemas.user))
     .then(normalized => dispatch(receiveCreateUser(normalized)));
   };

@@ -1,15 +1,15 @@
 $navy: #14607F;
-$skyblue: #74D6FF;
-$steelgrey: #3A6B7F;
-$midblue: #1F99CC;
-$lightblue: #27BFFF;
+$lightBlue: #27BFFF;
+$midBlue: #1F99CC;
+$skyBlue: #74D6FF;
+$steelGrey: #3A6B7F;
 
 
 body {
   margin: 0;
   padding: 0;
   font-family: Helvetica Neue, Helvetica, sans-serif;
-  font-weight: 200;
+  font-weight: 400;
   font-size: 14px;
   color: #444;
 }
@@ -23,12 +23,39 @@ a {
 }
 
 .user-list {
-  margin-top: 60px;
+  header h3 {
+    font-size: 18px;
+    color: $steelGrey;
+    font-weight: 400;
+    margin: 0 0 16px;
+  }
+
+  .users {
+    margin: 0 0 16px;
+    display: flex;
+
+    .user-icon {
+      flex: none;
+      margin: 0 8px 0 0;
+    }
+  }
+
+  .link-manage-users {
+    display: block;
+    color: $midBlue;
+    text-decoration: none;
+    margin: 0 0 16px;
+
+    &:hover {
+      color: $steelGrey;
+      text-decoration: underline;
+    }
+  }
 }
 
 .btn {
   border: none;
-  background-color: $skyblue;
+  background-color: $skyBlue;
   color: white;
   border-radius: 4px;
   font-size: inherit;
@@ -40,15 +67,15 @@ a {
 }
 
 .btn.alt {
-  background: $midblue;
+  background: $midBlue;
 }
 
-.btn.alt:hover, .btn.alt:focus {
-  background: $steelgrey;
+.btn.alt:hover {
+  background: $steelGrey;
 }
 
-.btn:hover, .btn:focus {
-  background-color: $lightblue;
+.btn:hover {
+  background-color: $lightBlue;
 }
 
 .input {
@@ -57,6 +84,14 @@ a {
   font-size: inherit;
   border: 1px solid #ddd;
 }
+
+
+.inline-form {
+  .input, .btn {
+    margin: 0 8px 0 0;
+  }
+}
+
 
 .sidebar-wrapper {
   display: flex;
@@ -81,7 +116,9 @@ a {
   flex: 4;
 }
 
-
+#standup {
+  margin: 0 0 32px;
+}
 
 
 #sidebar {
@@ -95,7 +132,7 @@ a {
 
 #sidebar .actions button {
   border: none;
-  background: $skyblue;
+  background: $skyBlue;
   color: white;
   padding: 8px 16px;
   border-radius: 8px;
@@ -104,7 +141,7 @@ a {
 }
 
 #sidebar .actions button:hover, #sidebar .actions button:active {
-  background: $lightblue;
+  background: $lightBlue;
 }
 
 #sidebar .actions button + button {
@@ -117,6 +154,10 @@ a {
   padding: 0;
 }
 
+#sidebar .standup-list__btn-show-all {
+  margin: 0 0 32px;
+}
+
 #sidebar .standup-list li {
   border-bottom: 1px solid #eee;
   line-height: 1.6em;
@@ -127,6 +168,17 @@ a {
 
 #sidebar .standup-list li:hover {
   background: #eee;
+}
+
+#sidebar .links a {
+  display: block;
+  color: $midBlue;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+    color: $steelGrey;
+  }
+
 }
 
 .sidebar-wrapper #sidebar.expand {
@@ -155,7 +207,7 @@ a {
 #logo {
   font-weight: 200;
   text-align: right;
-  color: $skyblue;
+  color: $skyBlue;
   margin: 0;
   position: absolute;
   top: 4px;
@@ -166,14 +218,14 @@ a {
 #header {
   font-weight: 200;
   font-size: 20px;
-  border-bottom: 1px solid $skyblue;
+  border-bottom: 1px solid $skyBlue;
   padding: 0 0 4px;
   margin: 0 0 16px;
-  color: $steelgrey;
+  color: $steelGrey;
   display: flex;
 
   .logo {
-    color: $midblue;
+    color: $midBlue;
     cursor: pointer;
     font: inherit;
     margin: 0 8px 0 0;
@@ -194,7 +246,6 @@ a {
     cursor: pointer;
   }
 }
-
 
 body {
   padding: 20px;
@@ -232,7 +283,7 @@ body {
 
 
 .entries {
-  margin: 0;
+  margin: 0 0 48px;
 }
 
 .entry {
@@ -271,7 +322,7 @@ body {
 .entry.header .entry-column{
   height: auto;
   text-transform: uppercase;
-  color: $midblue;
+  color: $midBlue;
   padding-left: 8px;
   font-size: 17px;
 }
@@ -324,13 +375,18 @@ body {
 }
 
 
+.standup-summary-view {
+  .btn {
+    margin: 0;
+  }
+}
+
 .user-icon {
   width: 60px;
   height: 60px;
   border-radius: 30px;
-  background: $skyblue;
+  background: $skyBlue;
   color: white;
-  line-height: 60px;
   text-align: center;
   font-size: 1.8rem;
   font-weight: 600;
@@ -341,52 +397,7 @@ body {
 }
 
 .user-icon:hover {
-  background: $steelgrey;
-}
-
-
-/*.entries .entry:nth-child(5n+1) .user-icon { background: $navy; }
-.entries .entry:nth-child(5n+2) .user-icon { background: $skyblue; }
-.entries .entry:nth-child(5n+3) .user-icon { background: $lightblue; }
-.entries .entry:nth-child(5n+4) .user-icon { background: $steelgrey; }
-.entries .entry:nth-child(5n+5) .user-icon { background: $midblue; }
-*/
-.user-icon.add-user {
-  background: #ccc;
-}
-
-.user-list .users{
- display: flex;
-}
-
-.user-list .users .user-icon {
-  flex: none;
-  margin: 0 10px;
-  cursor: pointer;
-}
-
-.user-list .user-icon:first-child {
-  margin-left: 0px;
-}
-
-
-
-.user-add-form {
-  display: flex;
-  align-items: center;
-}
-
-.user-add-form input {
-  border-radius: 4px;
-  border: none;
-  border-bottom: 1px solid #eee;
-  margin: 0 10px;
-  font-size: inherit;
-  outline: none;
-}
-
-.user-add-form input:first-child {
-  margin-left: 0;
+  background: $steelGrey;
 }
 
 
@@ -444,66 +455,118 @@ body {
 
 
 
-/* teams */
+.list-table {
 
-.teams {
-
-  h1 {
-    color: $midblue;
+  .list-table__header {
+    display: flex;
     margin: 0 0 32px;
+    align-items: center;
   }
 
-  .teams-list {
-    margin: 0 0 48px;
+  .list-table__header__title {
+    color: $midBlue;
+    font-size: 2em;
+    width: 100%;
+    margin: 0;
   }
 
-  .btn-show-add {
-    color: $midblue;
+  .list-table__header__search {
+    height: 2em;
 
-    &:hover {
-      text-decoration: underline;
+    &::placeholder {
+      color: #bbb;
+      font-style: italic;
+      font-weight: 200;
     }
-
   }
 
-  .form-add-team {
-    margin: 16px 0;
+  .list-table__list {
+    list-style-type: none;
+    padding: 0;
   }
-}
 
-.team-list-item {
-  border-bottom: 1px solid #ddd;
-  margin: 0 0 16px;
+  .list-table__list__item {
+    border-bottom: 1px solid #ddd;
+    margin: 0 0 16px;
+  }
 
-  header {
+  .list-table__list__item__header {
     display: flex;
     align-items: center;
   }
 
-  .team-list-item__name {
-    color: $steelgrey;
+  .list-table__list__item__title {
+    color: $steelGrey;
     font-size: 20px;
     width: 100%;
     padding: 0 0 8px;
 
     &:hover {
-      color: $midblue;
+      color: $midBlue;
     }
   }
 
-  .btn-edit {
+  .list-table__list__item__btn-edit {
     flex: 0;
     padding: 12px;
+    font-size: 12px;
     &:hover {
-      color: #333;
+      color: $midBlue;
     }
+  }
+
+  .list-table__btn-add {
+    color: $midBlue;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .list-table__form-add {
+    margin: 16px 0 0;
   }
 
 }
 
-.team-list-item__detail {
-  margin: 16px;
+
+.team-users{
+
+  .user-icon {
+    margin: 0 8px 0 0;
+  }
+
+  .on-team {
+    margin: 0 0 32px;
+  }
+
 }
+
+.user-table-item__detail {
+  padding: 16px;
+}
+
+.edit-section {
+
+  margin: 0 0 32px;
+
+  .edit-section__title {
+    color: $midBlue;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.4em;
+    margin: 0 0 16px;
+  }
+
+  > div {
+    margin-left: 32px;
+  }
+
+  .edit-section__content {
+    margin-left: 16px;
+  }
+}
+
 
 .loader-wrapper {
   height: 100px;

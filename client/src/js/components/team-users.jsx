@@ -12,38 +12,10 @@ import { addUserToTeam, removeUserFromTeam } from '../ducks/teams';
 
 import UserIcon from './user-icon';
 
-
 @autobind
 class TeamUsers extends Component {
   componentWillMount() {
     this.props.dispatch(fetchUsers());
-  }
-
-  render() {
-    const { Users, nonTeamUsers } = this.props;
-
-    return (<div className="team-users">
-      <h3>Users on this team</h3>
-
-      {Users.map(user => (
-        <p key={user.id}>
-          {user.fullName}
-          &nbsp;
-          <button
-            onClick={() => this.removeFromTeam(user.id)
-          }>x</button>
-        </p>)
-      )}
-
-      <h3>Add a user to this team</h3>
-      {nonTeamUsers.map(user => (
-        <UserIcon
-          key={user.id}
-          {...user}
-          onClick={this.addToTeam}
-        />
-      ))}
-    </div>);
   }
 
   addToTeam(userId) {
@@ -60,6 +32,34 @@ class TeamUsers extends Component {
       userId,
       teamId,
     }));
+  }
+
+  render() {
+    const { Users, nonTeamUsers } = this.props;
+
+    return (<div className="team-users">
+      <div className="on-team">
+        <p>Users on this team (click to remove)</p>
+        {Users.map(user => (
+          <UserIcon
+            key={user.id}
+            {...user}
+            onClick={this.removeFromTeam}
+          />
+        ))}
+      </div>
+
+      <div className="not-on-team">
+        <p>Other Users (click to add)</p>
+        {nonTeamUsers.map(user => (
+          <UserIcon
+            key={user.id}
+            {...user}
+            onClick={this.addToTeam}
+          />
+        ))}
+      </div>
+    </div>);
   }
 }
 

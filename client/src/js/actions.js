@@ -34,11 +34,12 @@ export function changeEntryValue(payload) {
   };
 }
 
-function requestCreateEntry(standupId, userId) {
+function requestCreateEntry({ teamId, standupId, userId }) {
   return {
     type: 'REQUEST_CREATE_ENTRY',
     standupId,
     userId,
+    teamId,
   };
 }
 
@@ -293,16 +294,22 @@ export function saveEntry(entry) {
 }
 
 // Add an entry to a standup
-export function createEntry(standupId, userId) {
+export function createEntry(props) {
   return (dispatch) => {
-    dispatch(requestCreateEntry(standupId, userId));
+    const { standupId, userId, teamId } = props;
+
+    dispatch(requestCreateEntry({
+      standupId,
+      userId,
+      teamId,
+    }));
 
     const entryProps = {
       StandupId: standupId,
       UserId: userId,
     };
 
-    return fetcher('/api/v1/entries', {
+    return fetcher(`/api/v1/teams/${teamId}/entries`, {
       method: 'POST',
       body: JSON.stringify(entryProps),
     })

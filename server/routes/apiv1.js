@@ -134,13 +134,21 @@ router.delete('/users/:userId', (req, res) => {
 
 
 // Create a new entry
-// todo - put this behind /teams/x/standups/y/ ?
-router.post('/entries', (req, res) => {
-  // start by finding the most recent entry by this user
+router.post('/teams/:teamId/entries', (req, res) => {
+  // find the last entry from this user in this team
   db.Entry.findOne({
     where: {
       UserId: req.body.UserId,
     },
+    include: [{
+      model: db.Standup,
+      include: [{
+        model: db.Team,
+        where: {
+          id: req.params.teamId,
+        },
+      }],
+    }],
     order: [
       ['id', 'DESC'],
     ],
@@ -165,6 +173,7 @@ router.post('/entries', (req, res) => {
     }
   });
 });
+
 
 router.put('/entries/:entryId', (req, res) => {
   db.Entry.findById(req.params.entryId, {

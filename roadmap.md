@@ -2,14 +2,10 @@
 
 ## Features
 
-* User management
-  * Add, edit, delete users in a separate context to team/standup
 * Reimplement Notes as a text field on Team
 
 ## Bugs, fixes, refactor
 
-* Copy-paste summary is broken, doesn't update reactively
-* Fix team edit UI, it's hideous
 * Get everything linted
 * Refactor from actions.js and reducers.js to using ducks
 * Implement a uniform pattern for error handling (errors reducer and flash messages?)

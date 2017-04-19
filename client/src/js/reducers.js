@@ -95,6 +95,25 @@ function activeStandup(state = defaultState.activeStandup, action) {
       });
     }
 
+    case 'RECEIVE_SAVE_ENTRY': {
+      const { data } = action;
+
+      // not this standup, ignore
+      if (data.StandupId !== state.id) {
+        return state;
+      }
+
+      return Object.assign({}, state, {
+        Entries: state.Entries.map((entry) => {
+          if (entry.id === data.id) {
+            return data;
+          }
+          return entry;
+        }),
+      });
+    }
+
+
     case 'RECEIVE_REMOVE_ENTRY': {
       // filter the removed Entry out of Entries[]
 

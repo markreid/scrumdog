@@ -41,7 +41,6 @@ a {
   }
 
   .link-manage-users {
-    display: block;
     color: $midBlue;
     text-decoration: none;
     margin: 0 0 16px;
@@ -171,7 +170,6 @@ a {
 }
 
 #sidebar .links a {
-  display: block;
   color: $midBlue;
   text-decoration: none;
   &:hover {

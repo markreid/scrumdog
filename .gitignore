@@ -3,4 +3,5 @@ npm-debug.log
 db.json
 client/build/*
 scrumdog.sqlite
+scrumdog.sqlite.*
 .DS_Store

@@ -27,7 +27,7 @@ class Header extends Component {
       <h1
         className="logo"
         onClick={this.props.onLogoClick}
-      >Scrumdog</h1>
+      >🐕 Scrumdog</h1>
       <h2
         className="standup-title"
       >{title}</h2>

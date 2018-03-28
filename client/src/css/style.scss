@@ -221,6 +221,7 @@ a {
   margin: 0 0 16px;
   color: $steelGrey;
   display: flex;
+  line-height: 1.25em;
 
   .logo {
     color: $midBlue;
@@ -228,7 +229,7 @@ a {
     font: inherit;
     margin: 0 8px 0 0;
     font-weight: 600;
-    flex: 0;
+    flex: none;
   }
 
   .standup-title {

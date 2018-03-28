@@ -6,6 +6,7 @@
 
 import React from 'react';
 import autobind from 'autobind-decorator';
+import moment from 'moment';
 
 
 function generateEntryString(entry) {
@@ -51,10 +52,13 @@ class StandupSummary extends React.Component {
   }
 
   render() {
-    if (!this.props.standup) return '';
+    const { standup, team } = this.props;
+    if (!standup) return '';
 
     const entries = this.props.standup.Entries.map(entry => generateEntryString(entry));
-    const entriesString = entries.join('');
+    const firstLine = `🐕 ${team.name} Standup Notes ${moment(standup.date).format('MMMM D')}\n\n`;
+    const summary = [firstLine, ...entries];
+    const summaryString = summary.join('');
 
     return (
       <div id="standup-summary">
@@ -66,7 +70,7 @@ class StandupSummary extends React.Component {
           <pre
             ref={(pre) => { this.entriesPre = pre; }}
             style={{ display: 'none' }}
-          >{entriesString}</pre>
+          >{summaryString}</pre>
         </div>
       </div>
     );

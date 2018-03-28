@@ -76,7 +76,7 @@ class App extends Component {
             {activeStandup &&
               <div>
                 <Standup standup={activeStandup} />
-                <StandupSummary standup={activeStandup} />
+                <StandupSummary standup={activeStandup} team={activeTeam} />
               </div>
             }
           </div>

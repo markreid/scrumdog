@@ -142,7 +142,7 @@ function standupTitles(state = defaultState.standupTitles, action) {
 
     case 'RECEIVE_STANDUP_TITLES':
       // replace
-      return action.data;
+      return action.data || null;
 
     case 'RECEIVE_REMOVE_STANDUP':
       // remove

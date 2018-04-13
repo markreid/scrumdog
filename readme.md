@@ -8,7 +8,7 @@ Super-simple app for running a daily standup.
 # clone the repo, then from root folder:
 npm install
 npm run build
-cp db.json.example db.json
+cp config.json.example config.json
 npm run start
 ```
 

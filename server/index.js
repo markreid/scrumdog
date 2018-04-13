@@ -6,13 +6,27 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const session = require('express-session');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
+const config = require('../config.json');
 const models = require('./models');
 const logger = require('./lib/logger');
 
 const apiRouter = require('./routes/apiv1');
 
 const app = express();
+
+app.use(session({
+  secret: config.sessionSecret,
+  store: new SequelizeStore({
+    db: models.sequelize,
+  }),
+  resave: false,
+  saveUninitialized: true,
+}));
+
+
 app.use('/assets', express.static('client/build'));
 app.use(morgan('dev', {
   stream: logger.morganStream,

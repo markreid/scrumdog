@@ -11,11 +11,15 @@
   },
   "dependencies": {
     "body-parser": "^1.15.2",
+    "connect-session-sequelize": "^5.2.1",
     "express": "^4.14.0",
+    "express-session": "^1.15.6",
     "flux": "^3.1.2",
     "immutable": "^3.8.1",
     "morgan": "^1.7.0",
     "pack-cli": "^1.4.5",
+    "passport": "^0.4.0",
+    "passport-google-oauth20": "^1.0.0",
     "sequelize": "^3.24.3",
     "sqlite3": "^3.1.4",
     "winston": "^2.3.1"

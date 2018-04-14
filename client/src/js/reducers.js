@@ -7,6 +7,7 @@ import { combineReducers } from 'redux';
 import _ from 'lodash';
 
 import { teamsReducer, activeTeamReducer } from './ducks/teams';
+import { authReducer } from './ducks/auth';
 
 // todo - get rid of deprecated crap
 const defaultState = {
@@ -235,4 +236,5 @@ export default combineReducers({
   errors,
   teams: teamsReducer,
   activeTeam: activeTeamReducer,
+  auth: authReducer,
 });

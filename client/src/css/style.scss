@@ -383,7 +383,7 @@ body {
 .user-icon {
   width: 60px;
   height: 60px;
-  border-radius: 30px;
+  border-radius: 100%;
   background: $skyBlue;
   color: white;
   text-align: center;
@@ -567,7 +567,21 @@ body {
 }
 
 
-.login .login__buttons {
+.login {
+  text-align: center;
+
+  .logo {
+    color: $midBlue;
+  }
+
+  .login__please {
+    font-size: 14px;
+    color: $steelGrey;
+  }
+}
+
+.login__buttons {
+  margin: 48px 0 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -601,6 +615,30 @@ body {
   background: #343434;
   &:hover {
     background: darken(#343434, 10%);
+  }
+}
+
+
+.auth-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  .user-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .btn-logout {
+    text-decoration: none;
+    margin-right: 12px;
+    color: $steelGrey;
+    font-size: 16px;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 

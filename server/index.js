@@ -12,11 +12,13 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const config = require('../config.json');
 const models = require('./models');
 const logger = require('./lib/logger');
+const auth = require('./lib/auth');
 
 const apiRouter = require('./routes/apiv1');
 
 const app = express();
 
+// sessions via sequelize
 app.use(session({
   secret: config.sessionSecret,
   store: new SequelizeStore({
@@ -26,26 +28,34 @@ app.use(session({
   saveUninitialized: true,
 }));
 
-
+// static assets
 app.use('/assets', express.static('client/build'));
+
+// request logging
 app.use(morgan('dev', {
   stream: logger.morganStream,
 }));
+
+// body parsing
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true,
 }));
 
 
-// only one route
-app.get('/', (req, res) => {
+// instantiate our auth module
+// (includes auth routes)
+auth(app);
+
+// api routes
+app.use('/api/v1', apiRouter);
+
+// all other routes, server the SPA
+app.get('*', (req, res) => {
   res.status(200).sendFile('client/build/index.html', {
     root: `${__dirname}/../`,
   });
 });
-
-// api routes
-app.use('/api/v1', apiRouter);
 
 
 /**

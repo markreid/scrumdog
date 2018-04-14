@@ -3,12 +3,34 @@
  */
 
 const express = require('express');
+const get = require('lodash/get');
 
 const db = require('../models');
 const log = require('../lib/logger');
 
 
 const router = new express.Router();
+
+
+// return the current user
+router.get('/whoami', (req, res) => {
+  res.send(req.user || {});
+});
+
+// logout (destroy the session)
+router.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.send({ success: true });
+});
+
+
+// authenticated users only for all the routes below
+router.use('/', (req, res, next) => {
+  if (!get(req, 'session.passport.user')) {
+    return res.sendStatus(401);
+  }
+  next();
+});
 
 // fetch the team's last standup
 router.get('/teams/:teamId/laststandup', (req, res) => {
@@ -407,5 +429,6 @@ router.put('/notes', (req, res) => {
     res.status(500).send(err);
   });
 });
+
 
 module.exports = router;

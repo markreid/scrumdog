@@ -6,5 +6,6 @@
     "username": null,
     "password": null,
     "dialect": "sqlite"
-  }
+  },
+  "mustAuth": false,
 }

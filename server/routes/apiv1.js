@@ -7,14 +7,24 @@ const get = require('lodash/get');
 
 const db = require('../models');
 const log = require('../lib/logger');
+const config = require('../../config.json');
 
+const { mustAuth } = config;
+
+// when auth is disabled, everybody is a guest
+const GUEST_USER = {
+  id: -1,
+  fullName: 'Guest',
+};
 
 const router = new express.Router();
 
 
-// return the current user
+// returns the current user
 router.get('/whoami', (req, res) => {
-  res.send(req.user || {});
+  res.send({
+    user: mustAuth ? (req.user || null) : GUEST_USER,
+  });
 });
 
 // logout (destroy the session)
@@ -24,13 +34,25 @@ router.get('/logout', (req, res) => {
 });
 
 
-// authenticated users only for all the routes below
-router.use('/', (req, res, next) => {
-  if (!get(req, 'session.passport.user')) {
+// users must be authed on all endpoints
+function authMiddleware (req, res, next) {
+  if (!req.user) {
     return res.sendStatus(401);
   }
   next();
-});
+}
+
+// set the guest user for everyone
+function guestMiddleware (req, res, next) {
+  req.user = GUEST_USER;
+  next();
+}
+
+
+// for all the following endpoints, enable either
+// auth or guest middleware, depending on our config
+router.use('/', mustAuth ? authMiddleware : guestMiddleware);
+
 
 // fetch the team's last standup
 router.get('/teams/:teamId/laststandup', (req, res) => {

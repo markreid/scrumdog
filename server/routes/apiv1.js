@@ -119,7 +119,7 @@ router.get('/standups/:id', (req, res) => {
       include: db.User,
     }],
   }).then((response) => {
-    if (!response) return res.status(404).send();
+    if (!response) return res.status(404).send({ error: 404 });
     return res.status(200).send(response);
   }).catch((err) => {
     log.error(err);
@@ -243,7 +243,7 @@ router.delete('/entries/:entryId', (req, res) => {
       id: req.params.entryId,
     },
   })
-  .then(() => res.status(200).send())
+  .then(() => res.status(200).send({ success: true }))
   .catch((err) => {
     log.error(err);
     res.status(500).send(err);
@@ -319,9 +319,9 @@ router.delete('/teams/:teamId', (req, res) => {
   db.Team.findById(req.params.teamId)
   .then((team) => {
     if (!team) {
-      return res.status(404).send({});
+      return res.status(404).send({ error: 404 });
     }
-    return team.destroy().then(() => res.status(200).send({}));
+    return team.destroy().then(() => res.status(200).send({ success: true }));
   })
   .catch(err => res.status(500).send(err));
 });
@@ -344,7 +344,7 @@ router.put('/teams/:teamId', (req, res) => {
   db.Team.findById(req.params.teamId)
   .then((team) => {
     if (!team) {
-      return res.status(404).send({});
+      return res.status(404).send({ error: 404 });
     }
 
     // can mutate name only

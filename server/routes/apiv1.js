@@ -7,6 +7,7 @@ const express = require('express');
 const db = require('../models');
 const log = require('../lib/logger');
 const config = require('../../config.json');
+const auth = require('../auth');
 
 const authEnabled = !!config.authEnabled;
 
@@ -30,6 +31,10 @@ router.get('/whoami', (req, res) => {
 router.get('/logout', (req, res) => {
   req.session.destroy();
   res.send({ success: true });
+});
+
+router.get('/authservices', (req, res) => {
+  res.send(auth.getEnabledServices());
 });
 
 

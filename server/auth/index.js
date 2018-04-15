@@ -60,6 +60,7 @@ passport.deserializeUser((id, done) => {
 
 // Initialize our Express app with the above
 module.exports = {
+  getEnabledServices,
   init: (app) => {
     app.get('/logout', (req, res) => {
       req.session.destroy();

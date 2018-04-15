@@ -3,13 +3,12 @@
  */
 
 const express = require('express');
-const get = require('lodash/get');
 
 const db = require('../models');
 const log = require('../lib/logger');
 const config = require('../../config.json');
 
-const { mustAuth } = config;
+const authEnabled = !!config.authEnabled;
 
 // when auth is disabled, everybody is a guest
 const GUEST_USER = {
@@ -23,7 +22,7 @@ const router = new express.Router();
 // returns the current user
 router.get('/whoami', (req, res) => {
   res.send({
-    user: mustAuth ? (req.user || null) : GUEST_USER,
+    user: authEnabled ? (req.user || null) : GUEST_USER,
   });
 });
 
@@ -35,23 +34,23 @@ router.get('/logout', (req, res) => {
 
 
 // users must be authed on all endpoints
-function authMiddleware (req, res, next) {
+function authMiddleware(req, res, next) {
   if (!req.user) {
     return res.sendStatus(401);
   }
-  next();
+  return next();
 }
 
 // set the guest user for everyone
-function guestMiddleware (req, res, next) {
-  req.user = GUEST_USER;
+function guestMiddleware(req, res, next) {
+  req.user = GUEST_USER; // eslint-disable-line no-param-reassign
   next();
 }
 
 
 // for all the following endpoints, enable either
 // auth or guest middleware, depending on our config
-router.use('/', mustAuth ? authMiddleware : guestMiddleware);
+router.use('/', authEnabled ? authMiddleware : guestMiddleware);
 
 
 // fetch the team's last standup

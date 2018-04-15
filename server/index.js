@@ -12,7 +12,7 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const config = require('../config.json');
 const models = require('./models');
 const logger = require('./lib/logger');
-const auth = require('./lib/auth');
+const auth = require('./auth');
 
 const apiRouter = require('./routes/apiv1');
 
@@ -45,7 +45,7 @@ app.use(bodyParser.urlencoded({
 
 // instantiate our auth module
 // (includes auth routes)
-auth(app);
+auth.init(app);
 
 // api routes
 app.use('/api/v1', apiRouter);

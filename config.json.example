@@ -7,5 +7,6 @@
     "password": null,
     "dialect": "sqlite"
   },
-  "mustAuth": false,
+  "authServices": ["google", "github"],
+  "authEnabled": false
 }

@@ -623,6 +623,8 @@ body {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  margin-left: 24px;
+  margin-top: -5px; // todo - find a better way to do this
 
   .user-icon {
     width: 36px;
@@ -632,6 +634,7 @@ body {
 
   .btn-logout {
     text-decoration: none;
+    font-weight: bold;
     margin-right: 12px;
     color: $steelGrey;
     font-size: 16px;

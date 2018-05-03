@@ -65,7 +65,13 @@ class App extends Component {
     return (
       <div>
         <div>
-          <Header onLogoClick={() => this.toggleLeftSidebar()} />
+          <Header
+            activeStandup={activeStandup}
+            activeTeam={activeTeam}
+            onLogoClick={() => this.toggleLeftSidebar()}
+            auth={this.props.auth}
+            toggleRightSidebar={() => this.toggleRightSidebar()}
+          />
         </div>
 
         <div className={wrapperClassName}>
@@ -81,7 +87,6 @@ class App extends Component {
             }
           </div>
           <div className="sidebar sidebar-right">
-            { false && <Notes />}
           </div>
         </div>
       </div>
@@ -92,7 +97,7 @@ class App extends Component {
 
 const mapStateToProps = state => state;
 
-const WithAuth = (props) => (
+const WithAuth = props => (
   <AuthWrapper {...props}>
     <App {...props} />
   </AuthWrapper>

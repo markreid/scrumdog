@@ -11,7 +11,6 @@ import { Redirect } from 'react-router-dom';
 import { whoami } from '../ducks/auth';
 
 import Loader from './loader';
-import AuthHeader from './auth-header';
 
 class AuthWrapper extends React.Component {
   componentDidMount() {
@@ -21,16 +20,15 @@ class AuthWrapper extends React.Component {
   render() {
     const { props } = this;
     if (props.auth.syncing) {
-      return <Loader />
+      return <Loader />;
     }
 
     if (!props.auth.user) {
-      return <Redirect to='/login' />;
+      return <Redirect to="/login" />;
     }
 
     return (
       <div className="auth-wrapper">
-        <AuthHeader auth={props.auth} />
         {props.children}
       </div>
     );

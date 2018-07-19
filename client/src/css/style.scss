@@ -383,7 +383,7 @@ body {
 .user-icon {
   width: 60px;
   height: 60px;
-  border-radius: 30px;
+  border-radius: 100%;
   background: $skyBlue;
   color: white;
   text-align: center;
@@ -563,6 +563,85 @@ body {
 
   .edit-section__content {
     margin-left: 16px;
+  }
+}
+
+
+.login {
+  text-align: center;
+
+  .logo {
+    color: $midBlue;
+  }
+
+  .login__please {
+    font-size: 14px;
+    color: $steelGrey;
+  }
+}
+
+.login__buttons {
+  margin: 48px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+
+%btn-login {
+  display: block;
+  width: 200px;
+  height: 40px;
+  border-radius: 4px;
+  color: white;
+  text-decoration: none;
+  line-height: 40px;
+  text-align: center;
+  margin: 0 0 6px;
+}
+
+.btn-login--google {
+  @extend %btn-login;
+  background: #D3342C;
+  &:hover {
+    background: darken(#D33426, 10%);
+  }
+}
+
+.btn-login--github {
+  @extend %btn-login;
+  background: #343434;
+  &:hover {
+    background: darken(#343434, 10%);
+  }
+}
+
+
+.auth-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-left: 24px;
+  margin-top: -5px; // todo - find a better way to do this
+
+  .user-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .btn-logout {
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 12px;
+    color: $steelGrey;
+    font-size: 16px;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 

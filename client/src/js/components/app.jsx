@@ -11,7 +11,6 @@ import { Provider, connect } from 'react-redux';
 import {
   BrowserRouter,
   Route,
-  Redirect
 } from 'react-router-dom';
 
 import store from '../store';
@@ -23,15 +22,16 @@ import Header from './header.jsx';
 import Notes from './notes.jsx';
 import Teams from './teams.jsx';
 import UserTable from './user-table';
+import Login from './login';
+import AuthWrapper from './auth-wrapper';
 
 
-@autobind
 class App extends Component {
   constructor() {
     super();
 
     this.state = {
-      showSidebar: false,
+      showSidebar: 0,
     };
   }
 
@@ -65,7 +65,13 @@ class App extends Component {
     return (
       <div>
         <div>
-          <Header onLogoClick={this.toggleLeftSidebar} />
+          <Header
+            activeStandup={activeStandup}
+            activeTeam={activeTeam}
+            onLogoClick={() => this.toggleLeftSidebar()}
+            auth={this.props.auth}
+            toggleRightSidebar={() => this.toggleRightSidebar()}
+          />
         </div>
 
         <div className={wrapperClassName}>
@@ -81,7 +87,6 @@ class App extends Component {
             }
           </div>
           <div className="sidebar sidebar-right">
-            { false && <Notes />}
           </div>
         </div>
       </div>
@@ -89,24 +94,25 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  activeStandup: state.activeStandup,
-  activeTeam: state.activeTeam,
-});
-const ConnectedApp = connect(mapStateToProps)(App);
 
+const mapStateToProps = state => state;
 
-// basic router. right now it's only users or "everything else"
-const Router = () => (<div>
-  <Route path="/" component={ConnectedApp} exact />
-  <Route path="/users" component={UserTable} />
-</div>);
+const WithAuth = props => (
+  <AuthWrapper {...props}>
+    <App {...props} />
+  </AuthWrapper>
+);
+const ConnectedWithAuth = connect(mapStateToProps)(WithAuth);
 
-// Wrap app in a Provider so redux parts get passed in to context
+// Wrap it all in a Redux provider
 const ProviderWrapper = () => (
   <Provider store={store}>
     <BrowserRouter>
-      <Router />
+      <div>
+        <Route path="/" component={ConnectedWithAuth} exact />
+        <Route path="/login" component={Login} />
+        <Route path="/users" component={UserTable} />
+      </div>
     </BrowserRouter>
   </Provider>
 );

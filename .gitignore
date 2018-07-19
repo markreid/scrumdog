@@ -1,6 +1,6 @@
 node_modules/
 npm-debug.log
-db.json
+config.json
 client/build/*
 scrumdog.sqlite
 scrumdog.sqlite.*

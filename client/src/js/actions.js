@@ -18,12 +18,6 @@ const modelProps = {
 };
 
 
-const ajaxHeaders = {
-  Accept: 'application/json',
-  'Content-Type': 'application/json',
-};
-
-
 // update one of the properties
 export function changeEntryValue(payload) {
   return {
@@ -323,7 +317,7 @@ export function removeEntry(entryId, standupId) {
   return (dispatch) => {
     dispatch(requestRemoveEntry(entryId, standupId));
 
-    return fetch(`/api/v1/entries/${entryId}`, {
+    return fetcher(`/api/v1/entries/${entryId}`, {
       method: 'DELETE',
     })
     .then((response) => {
@@ -358,8 +352,7 @@ export function fetchStandupTitles(teamId) {
   return (dispatch) => {
     dispatch(requestStandupTitles(teamId));
 
-    return fetch(`/api/v1/teams/${teamId}/standuptitles`)
-    .then(response => response.json())
+    return fetcher(`/api/v1/teams/${teamId}/standuptitles`)
     .then(data => dispatch(receiveStandupTitles({ data })))
     .catch(err => dispatch(receiveStandupTitles({ err })));
   };
@@ -370,8 +363,7 @@ export function fetchUsers() {
   return (dispatch) => {
     dispatch(requestUsers());
 
-    return fetch('/api/v1/users')
-    .then(response => response.json())
+    return fetcher('/api/v1/users')
     .then(json => normalize(json, arrayOf(normalizerSchemas.user)))
     .then(normalized => dispatch(receiveUsers(normalized)));
   };
@@ -381,8 +373,7 @@ export function fetchTeamUsers(teamId) {
   return (dispatch) => {
     dispatch(requestTeamUsers(teamId));
 
-    return fetch(`/api/v1/teams/${teamId}/users`)
-    .then(response => response.json())
+    return fetcher(`/api/v1/teams/${teamId}/users`)
     .then(json => normalize(json, arrayOf(normalizerSchemas.user)))
     .then(normalized => dispatch(receiveUsers(normalized)))
     .catch(error => console.error(error));
@@ -417,12 +408,10 @@ export function createUser(props) {
 export function updateUser(props) {
   return (dispatch) => {
     dispatch(requestUpdateUser());
-    return fetch(`/api/v1/users/${props.id}`, {
+    return fetcher(`/api/v1/users/${props.id}`, {
       method: 'PUT',
       body: JSON.stringify(props),
-      headers: ajaxHeaders,
     })
-    .then(response => response.json())
     .then(json => normalize(json, normalizerSchemas.user))
     .then(normalized => dispatch(receiveUpdateUser(normalized)));
   };
@@ -432,10 +421,9 @@ export function removeUser(userId) {
   return (dispatch) => {
     dispatch(requestRemoveUser(userId));
 
-    return fetch(`/api/v1/users/${userId}`, {
+    return fetcher(`/api/v1/users/${userId}`, {
       method: 'DELETE',
     })
-    .then(response => response.json())
     .then(() => {
       dispatch(receiveRemoveUser(userId));
     });
@@ -446,10 +434,9 @@ export function removeStandup(standupId) {
   return (dispatch) => {
     dispatch(requestRemoveStandup(standupId));
 
-    return fetch(`/api/v1/standups/${standupId}`, {
+    return fetcher(`/api/v1/standups/${standupId}`, {
       method: 'DELETE',
     })
-    .then(response => response.json())
     .then(() => dispatch(receiveRemoveStandup(standupId)));
   };
 }
@@ -458,8 +445,7 @@ export function fetchNotes() {
   return (dispatch) => {
     dispatch(requestFetchNotes());
 
-    return fetch('/api/v1/notes')
-    .then(response => response.json())
+    return fetcher('/api/v1/notes')
     .then((data) => {
       dispatch(receiveFetchNotes({ data }));
     })
@@ -473,14 +459,12 @@ export function sendNotes(notes) {
   return (dispatch) => {
     dispatch(requestSendNotes());
 
-    return fetch('/api/v1/notes', {
+    return fetcher('/api/v1/notes', {
       method: 'PUT',
       body: JSON.stringify({
         notes,
       }),
-      headers: ajaxHeaders,
     })
-    .then(response => response.json())
     .then((data) => {
       dispatch(receiveSendNotes({ data }));
       return data.notes;

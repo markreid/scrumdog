@@ -6,9 +6,57 @@ const express = require('express');
 
 const db = require('../models');
 const log = require('../lib/logger');
+const config = require('../../config.json');
+const auth = require('../auth');
 
+const authEnabled = !!config.authEnabled;
+
+// when auth is disabled, everybody is a guest
+const GUEST_USER = {
+  id: -1,
+  fullName: 'Guest',
+};
 
 const router = new express.Router();
+
+
+// returns the current user
+router.get('/whoami', (req, res) => {
+  res.send({
+    user: authEnabled ? (req.user || null) : GUEST_USER,
+  });
+});
+
+// logout (destroy the session)
+router.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.send({ success: true });
+});
+
+router.get('/authservices', (req, res) => {
+  res.send(auth.getEnabledServices());
+});
+
+
+// users must be authed on all endpoints
+function authMiddleware(req, res, next) {
+  if (!req.user) {
+    return res.sendStatus(401);
+  }
+  return next();
+}
+
+// set the guest user for everyone
+function guestMiddleware(req, res, next) {
+  req.user = GUEST_USER; // eslint-disable-line no-param-reassign
+  next();
+}
+
+
+// for all the following endpoints, enable either
+// auth or guest middleware, depending on our config
+router.use('/', authEnabled ? authMiddleware : guestMiddleware);
+
 
 // fetch the team's last standup
 router.get('/teams/:teamId/laststandup', (req, res) => {
@@ -75,7 +123,7 @@ router.get('/standups/:id', (req, res) => {
       include: db.User,
     }],
   }).then((response) => {
-    if (!response) return res.status(404).send();
+    if (!response) return res.status(404).send({ error: 404 });
     return res.status(200).send(response);
   }).catch((err) => {
     log.error(err);
@@ -199,7 +247,7 @@ router.delete('/entries/:entryId', (req, res) => {
       id: req.params.entryId,
     },
   })
-  .then(() => res.status(200).send())
+  .then(() => res.status(200).send({ success: true }))
   .catch((err) => {
     log.error(err);
     res.status(500).send(err);
@@ -275,9 +323,9 @@ router.delete('/teams/:teamId', (req, res) => {
   db.Team.findById(req.params.teamId)
   .then((team) => {
     if (!team) {
-      return res.status(404).send({});
+      return res.status(404).send({ error: 404 });
     }
-    return team.destroy().then(() => res.status(200).send({}));
+    return team.destroy().then(() => res.status(200).send({ success: true }));
   })
   .catch(err => res.status(500).send(err));
 });
@@ -300,7 +348,7 @@ router.put('/teams/:teamId', (req, res) => {
   db.Team.findById(req.params.teamId)
   .then((team) => {
     if (!team) {
-      return res.status(404).send({});
+      return res.status(404).send({ error: 404 });
     }
 
     // can mutate name only
@@ -407,5 +455,6 @@ router.put('/notes', (req, res) => {
     res.status(500).send(err);
   });
 });
+
 
 module.exports = router;

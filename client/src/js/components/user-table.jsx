@@ -90,7 +90,7 @@ class UserTable extends React.Component {
           </header>
           <div className="list-table__list">
             {filtered.map(user => (
-              <UserTableItem user={user} key={user.id} clickHandler={itemClickHandler} />
+              <UserTableItem user={user} key={user.id} onClick={itemClickHandler} />
             ))}
           </div>
 

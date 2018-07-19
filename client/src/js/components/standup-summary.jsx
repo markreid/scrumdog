@@ -40,15 +40,10 @@ function generateEntryString(entry) {
 class StandupSummary extends React.Component {
 
   copy() {
-    // unhide the text summary, copy it, hide it again.
-    const range = document.createRange();
-    range.selectNode(this.entriesPre);
-    this.entriesPre.style.display = 'block';
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
+    this.textarea.style.display = 'block';
+    this.textarea.select();
     document.execCommand('copy');
-    window.getSelection().removeAllRanges();
-    this.entriesPre.style.display = 'none';
+    this.textarea.style.display = 'none';
   }
 
   render() {
@@ -58,7 +53,7 @@ class StandupSummary extends React.Component {
     const entries = this.props.standup.Entries.map(entry => generateEntryString(entry));
     const firstLine = `🐕 ${team.name} Standup Notes ${moment(standup.date).format('MMMM D')}\n\n`;
     const summary = [firstLine, ...entries];
-    const summaryString = summary.join('');
+    const summaryString = summary.join('').trim() + '\n';
 
     return (
       <div id="standup-summary">
@@ -67,10 +62,11 @@ class StandupSummary extends React.Component {
             className="btn alt"
             onClick={this.copy}
           >Copy text summary</button>
-          <pre
-            ref={(pre) => { this.entriesPre = pre; }}
+          <textarea
+            ref={element => this.textarea = element}
             style={{ display: 'none' }}
-          >{summaryString}</pre>
+            value={summaryString}
+          />
         </div>
       </div>
     );

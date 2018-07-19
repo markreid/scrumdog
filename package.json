@@ -51,7 +51,7 @@
     "eslint-plugin-import": "^1.16.0",
     "eslint-plugin-jsx-a11y": "^2.2.2",
     "eslint-plugin-react": "^6.3.0",
-    "nodemon": "^1.10.2"
+    "nodemon": "^1.17.5"
   },
   "scripts": {
     "build": "pack -r -m -s client/src -m js/index.js -d client/build -b app",
